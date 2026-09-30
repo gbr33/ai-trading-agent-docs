@@ -194,3 +194,37 @@ existing
 Position. Lesson recorded: validate integer business fields with strict 
 mode,
 not isinstance checks inside field validators.
+
+## 2026-09-30 — B3 design decisions
+Broker interface and simulated broker:
+
+1. Abstract base class enforces the interface. Every broker (simulated,
+   paper, IBKR) subclasses Broker. The strategy never knows which is 
+active.
+   Blueprint Section 24.
+
+2. Typed exceptions: BrokerError base, BrokerNotConnected, OrderNotFound,
+   OrderRejected. Callers catch categories, not bare Exception.
+
+3. Account injected, not constructed. SimulatedBroker(account). Tests and
+   future stages can substitute any SimulatedAccount.
+
+4. Connection gate on every operation except connect, disconnect,
+   is_connected. Same behavior a real broker API has.
+
+5. submit_order walks CREATED -> SUBMITTED -> ACCEPTED in one call, or
+   returns a REJECTED order. Callers must check the returned order; a
+   successful call does not imply acceptance. Blueprint Section 26.
+
+6. submit does not move cash or create positions. Those are fill-engine
+   concerns (B4).
+
+7. modify_order and close_position raise NotImplementedError. Explicit,
+   fail-closed. No silent no-op.
+
+8. cancel_all returns the list of newly-cancelled orders for audit.
+
+9. Authorization deferred to Stage C. Documented as a known limitation.
+   Blueprint Section 60 Invariant 2 will be enforced when the 
+authorization
+   object exists.

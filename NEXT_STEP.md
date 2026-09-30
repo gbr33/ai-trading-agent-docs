@@ -1,11 +1,10 @@
 # NEXT STEP
 
-Stage B, Step 3 — Simulated broker.
+Stage B, Step 4 — Fill engine.
 
-Goal: a SimulatedBroker that implements the generic broker interface
-(connect, disconnect, get_account, get_positions, get_open_orders,
-submit_order, cancel_order, modify_order, get_order, close_position,
-cancel_all) against the SimulatedAccount and the order state machine.
-No fills yet — only order lifecycle: submit, accept, cancel, reject.
+Goal: a fill engine that turns ACCEPTED orders into fills against market
+events, updating SimulatedAccount and the order state machine. Covers 
+spread,
+slippage, commission, partial fills, and deterministic fill timing.
 
 Awaiting: instructor to issue the step contract.

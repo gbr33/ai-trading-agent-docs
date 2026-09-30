@@ -27,3 +27,7 @@ validation
   in both Position and SimulatedOrder. Fixed with Annotated[int, 
 Field(strict=True)].
   Regression test added.
+
+- B3 complete: abstract Broker interface and SimulatedBroker 
+implementation
+  (code commit 5c578a1). Order lifecycle only; no fills yet.
