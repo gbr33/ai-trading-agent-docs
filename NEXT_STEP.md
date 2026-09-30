@@ -1,10 +1,11 @@
 # NEXT STEP
 
-Stage B, Step 4 — Fill engine.
+Stage B, Step 5 — Apply fills; modify_order; close_position.
 
-Goal: a fill engine that turns ACCEPTED orders into fills against market
-events, updating SimulatedAccount and the order state machine. Covers 
-spread,
-slippage, commission, partial fills, and deterministic fill timing.
+Goal: wire the fill engine into SimulatedBroker. Add a method that takes a
+market bar and processes every ACCEPTED or PARTIALLY_FILLED order through
+try_fill, updating the order state machine and SimulatedAccount on each
+result. Implement modify_order and close_position. Add SELL-side fill
+support so close_position can use it.
 
 Awaiting: instructor to issue the step contract.

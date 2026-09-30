@@ -228,3 +228,38 @@ active.
    Blueprint Section 60 Invariant 2 will be enforced when the 
 authorization
    object exists.
+
+## 2026-09-30 — B4 design decisions
+Fill engine:
+
+1. Pure function, no side effects. try_fill returns FillResult | None and
+   never touches the account or the order. The broker applies fills in B5.
+   Makes the engine trivial to test and deterministic.
+
+2. Next-bar fills only. bar.timestamp must be strictly after
+   order.created_at. Same-bar fills are lookahead and are forbidden.
+   Blueprint Sections 8, 9, 37.
+
+3. Half-spread against trade direction. BUY fill = P * (1 + 
+spread_bps/2/10000).
+   Represents paying the ask when buying. Counterpart for SELL in B5.
+
+4. Slippage is separate from spread so cost stress can vary one without 
+the
+   other. Blueprint Section 42.
+
+5. Limit fill price is best-of. For BUY LIMIT at L: if bar.open < L, fill 
+at
+   bar.open. Otherwise fill at L. Matches real limit order behavior.
+
+6. Partial fills from bar volume.
+   max_fillable = floor(bar.volume * max_fill_pct_of_bar_volume).
+   Blueprint Sections 25, 27.
+
+7. Commission = max(commission_min, commission_per_share * fill_qty).
+   Simple, auditable. Real brokers have tiers; those can be layered later
+   without changing the interface.
+
+8. Decimal throughout. Fill price quantized to 6 dp.
+
+9. BUY only for B4. SELL-side deferred to B5 with exits.

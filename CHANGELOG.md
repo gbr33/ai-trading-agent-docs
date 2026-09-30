@@ -31,3 +31,8 @@ Field(strict=True)].
 - B3 complete: abstract Broker interface and SimulatedBroker 
 implementation
   (code commit 5c578a1). Order lifecycle only; no fills yet.
+
+- B4 complete: fill engine with spread, slippage, commission, partial 
+fills,
+  and next-bar-only timing (code commit c69ec9b).
+
