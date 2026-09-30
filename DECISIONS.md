@@ -67,3 +67,38 @@ first-party,
 alphabetized within each group). If a step still produces a ruff failure, 
 the
 commit does not land — the error is pasted and corrected first.
+
+## 2026-09-30 — A5 design decisions
+Point-in-time event stream:
+
+1. Pull-based only. No iteration over the stream, no peek, no random 
+access.
+   The safest anti-lookahead interface cannot express future access.
+   Blueprint Sections 8, 9.
+
+2. Internal buffer, never exposed. Future events pulled from the provider 
+are
+   held privately and released only after the clock reaches their 
+timestamp.
+
+3. Clock is the sole authority. The stream reads clock.now and never calls
+   datetime.now(). Blueprint Section 10.
+
+4. Backward clock moves still raise. advance_to delegates to 
+SimulationClock,
+   which already rejects backward motion.
+
+5. Anti-lookahead tests included. Two tests in tests/test_point_in_time.py
+   enforce Section 37 directly: a future event never appears in released
+   output, and dataset truncation produces identical behavior on the 
+retained
+   prefix.
+
+## 2026-09-30 — Process change for Stage B onward
+Ruff import-order errors appeared in every A-stage step and required a
+follow-up "fix ruff import order" commit each time. Starting with Stage B,
+every step runs `ruff check --fix` before the manual `ruff check`. Safe 
+fixes
+are applied first, then verified. If the second check is not clean, we 
+stop
+and fix manually before committing.

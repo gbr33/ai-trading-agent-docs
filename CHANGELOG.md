@@ -7,3 +7,10 @@ commit 16bc51f).
 commit 03fd0ca).
 - A4 complete: dataset manifest and fail-closed dataset validator (code 
 commit f728c55).
+- A5 complete: point-in-time event stream enforcing anti-lookahead (code 
+commit 245cdc2).
+- Stage A complete: simulation foundation — canonical market event, 
+simulation
+  clock, historical data provider, dataset validator, point-in-time 
+boundary.
+  All A-stage tests passing.
