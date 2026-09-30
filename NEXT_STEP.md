@@ -1,10 +1,12 @@
 # NEXT STEP
 
-Stage A, Step 3 — Historical data provider.
+Stage A, Step 4 — Historical dataset validation.
 
-Goal: a provider that reads historical bars and yields MarketEvent objects 
-in
-strict chronological order, respecting a point-in-time boundary so that no
-future information is ever visible to the replay engine.
+Goal: validate a historical dataset before it is allowed to feed the 
+replay
+engine. Checks dataset integrity (source, timeframe, timezone, symbol 
+list,
+checksum), detects missing bars, duplicate bars, and gaps, and refuses to
+accept an invalid dataset.
 
 Awaiting: instructor to issue the step contract.
