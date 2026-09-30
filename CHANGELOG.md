@@ -14,3 +14,7 @@ simulation
   clock, historical data provider, dataset validator, point-in-time 
 boundary.
   All A-stage tests passing.
+
+- B1 complete: simulated account and position, long-only, Decimal-correct
+  (code commit 3524511). CI green.
+- ci: GitHub Actions workflow running ruff, mypy, pytest on every push.

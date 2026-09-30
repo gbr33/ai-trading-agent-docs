@@ -1,12 +1,14 @@
 # NEXT STEP
 
-Stage B, Step 1 — Simulated account.
+Stage B, Step 2 — Simulated orders.
 
-Goal: a SimulatedAccount that tracks cash, equity, positions, realized and
-unrealized P&L, commissions, and total exposure. Every fill changes 
-account
-state deterministically. This is the accounting foundation for the 
+Goal: a SimulatedOrder model and order state machine (CREATED, SUBMITTED,
+ACCEPTED, PARTIALLY_FILLED, FILLED, CANCELLED, REJECTED) that the 
 simulated
-broker.
+broker will drive. Orders are immutable value objects; state transitions 
+are
+validated against the allowed graph. No code path assumes a fill just 
+because
+submission succeeded.
 
 Awaiting: instructor to issue the step contract.

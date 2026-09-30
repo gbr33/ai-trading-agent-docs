@@ -102,3 +102,48 @@ fixes
 are applied first, then verified. If the second check is not clean, we 
 stop
 and fix manually before committing.
+
+## 2026-09-30 — B1 design decisions
+Simulated account:
+
+1. Decimal for all money. Cash, prices, P&L, commissions, slippage. 
+Blueprint
+   Section 29 requires deterministic account-state changes.
+
+2. Position is frozen; SimulatedAccount is mutable. Same pattern as
+   MarketEvent. Updating a position replaces the object.
+
+3. Long-only for B1. Quantity > 0 enforced. Shorts are a later stage.
+
+4. One position per symbol. Adding to an existing position adjusts the 
+average
+   entry price, quantized to 6 decimal places. Partial close leaves the
+   average entry price unchanged.
+
+5. Fail closed on overdraft. Open that would overdraw cash raises before 
+any
+   state change. Public methods are atomic.
+
+6. Slippage is a reporting metric, not a cash movement. It is already 
+reflected
+   in the fill price. The account accumulates it for later analysis.
+
+7. No clock inside the account. All timestamps are passed by the caller.
+
+8. Bool rejected as quantity. Python treats True as 1. A bool quantity is 
+a bug
+   and must fail.
+
+## 2026-09-30 — Process change confirmed
+Ruff --fix now runs first in every step. Of 87 errors reported on B1, 86 
+were
+auto-fixed (mostly import order and formatting); the 1 real rule violation
+(TRY004, ValueError vs TypeError) was fixed manually. This eliminated the
+follow-up "fix ruff import order" commits that occurred on every A-stage 
+step.
+
+## 2026-09-30 — CI live
+GitHub Actions runs ruff, mypy, pytest on every push to main of
+gbr33/ai-trading-agent (private). First code commit through CI: 3524511.
+Actions updated to Node 24 compatible versions (checkout@v5, 
+setup-python@v6).
