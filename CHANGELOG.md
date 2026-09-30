@@ -5,3 +5,5 @@ commit 16bc51f).
 (code commit f73975d).
 - A3 complete: historical data provider with fail-closed ordering (code 
 commit 03fd0ca).
+- A4 complete: dataset manifest and fail-closed dataset validator (code 
+commit f728c55).
