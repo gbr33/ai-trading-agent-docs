@@ -147,3 +147,50 @@ GitHub Actions runs ruff, mypy, pytest on every push to main of
 gbr33/ai-trading-agent (private). First code commit through CI: 3524511.
 Actions updated to Node 24 compatible versions (checkout@v5, 
 setup-python@v6).
+
+## 2026-09-30 — B2 design decisions
+Order model and state machine:
+
+1. Frozen SimulatedOrder. Transitions return new objects via 
+model_validate.
+   Same pattern as MarketEvent and Position.
+
+2. Explicit transition graph in ALLOWED_TRANSITIONS dict. No if/else 
+chains.
+   Blueprint Section 26.
+
+3. Terminal states (FILLED, CANCELLED, REJECTED) have no outgoing 
+transitions.
+
+4. No shortcut transitions. CREATED -> ACCEPTED is rejected. Broker path 
+is
+   CREATED -> SUBMITTED -> ACCEPTED. Blueprint Section 26.
+
+5. Partial fills stay in PARTIALLY_FILLED until filled_quantity == 
+quantity.
+   Average fill price is a quantity-weighted average, quantized to 6 dp.
+   Blueprint Sections 26 and 78.
+
+6. Strict int fields via Annotated[int, Field(strict=True)]. Prevents 
+Python's
+   True == 1 coercion from bypassing field validators. Regression test 
+added.
+
+7. order_id is caller-supplied. No UUID generation. Required for 
+deterministic
+   replay. Blueprint Section 36.
+
+8. No broker logic in state_machine.py. No cash. No sessions. No risk. 
+Pure
+   transition validation. Separates concerns.
+
+## 2026-09-30 — Lesson: Pydantic v2 bool coercion
+Pydantic v2 coerces bool to int by default before field validators run. A
+field validator checking `isinstance(v, bool)` sees the coerced int, not 
+the
+bool. Annotated[int, Field(strict=True)] is the correct fix. This bug was
+caught by tests in B2 and fixed in both the new SimulatedOrder and the 
+existing
+Position. Lesson recorded: validate integer business fields with strict 
+mode,
+not isinstance checks inside field validators.

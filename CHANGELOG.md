@@ -18,3 +18,12 @@ boundary.
 - B1 complete: simulated account and position, long-only, Decimal-correct
   (code commit 3524511). CI green.
 - ci: GitHub Actions workflow running ruff, mypy, pytest on every push.
+
+- B2 complete: immutable order model and validated state machine
+  (code commit 8d14164). Also fixed a real bug: Pydantic v2 coerced bool 
+to
+  int before field validators ran, so `quantity=True` slipped past 
+validation
+  in both Position and SimulatedOrder. Fixed with Annotated[int, 
+Field(strict=True)].
+  Regression test added.
