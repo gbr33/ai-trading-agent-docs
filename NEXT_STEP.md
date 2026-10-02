@@ -1,12 +1,12 @@
 # NEXT STEP
 
-Stage E, Step 3 - ReplayEngine journal wiring.
+Stage E, Step 4 - Trades and flat closes.
 
-Goal: the ReplayEngine writes a complete audit chain to the Journal on
-every bar. Each bar is one transaction. Rows: market event, AI decision,
-validation, risk, portfolio, orders, fills, trades. Uses deterministic
-IDs derived from existing decision IDs so replay is reproducible. After
-E3, every trade produced by a replay can be traced back to its market
-event via trace_trade.
+Goal: write trades rows when a position exits (via exit engine or flat
+engine). Requires ExitResult to carry entry_fill_id and quantity so the
+trade can be linked to its entry. Flat engine needs to return per-symbol
+closed positions with fill info instead of just a FlattenResult summary.
+Then trace_trade can walk all the way from a closed trade back to its
+market event with no missing links.
 
 Awaiting: instructor to issue the step contract.

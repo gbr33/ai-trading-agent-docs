@@ -71,3 +71,5 @@ rejected
 - E1 complete: SQLite journal with full 16-table schema and 9 typed insert/get pairs for the audit spine (code commit 92dd8a2).
 
 - E2 complete: trace_trade walking the full audit chain (code commit afbe1b4).
+
+- E3 complete: ReplayEngine writes a per-bar audit chain to the journal inside a single transaction (code commit 934d7f5).
