@@ -1,11 +1,14 @@
 # NEXT STEP
 
-Stage C, Step 4 — Execution authorization.
+Stage D, Step 1 — Historical event loop.
 
-Goal: a frozen ExecutionAuthorization object that carries the outcome of the
-validator, risk engine, and portfolio engine into the broker. The broker
-requires a valid authorization before submitting any order. This enforces
-Blueprint Section 60 Invariant 2 ("no order without authorization") and
-closes the Stage C decision pipeline.
+Goal: an event-driven replay engine that pulls MarketEvents one at a time
+from a PointInTimeEventStream, advances the SimulationClock, and drives the
+existing decision pipeline (validator -> risk -> portfolio -> authorization
+-> broker) against a SimulatedBroker. No scanner, no AI, no news yet. This
+step proves the loop works end to end on a hand-built scenario.
+
+Also closes the C4 known issue: the orchestrator uses execute_authorized
+exclusively, and submit_order becomes internal in a later D step.
 
 Awaiting: instructor to issue the step contract.

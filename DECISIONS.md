@@ -412,3 +412,38 @@ Portfolio engine:
    caller bug.
 
 8. Engine and its types live in controller.py, matching Blueprint Section 5.
+
+## 2026-10-02 — C4 design decisions
+Execution authorization:
+
+1. Two paths, honestly named. submit_order is the low-level primitive kept
+   for tests and internal use. execute_authorized is the production path
+   that requires a valid authorization. The invariant "no order without
+   authorization" is enforced on the production path. Closing the gap on
+   submit_order is a Stage D task when the orchestrator takes over.
+
+2. IDs are content hashes, not UUIDs. sha256 truncated to 16 hex chars.
+   Deterministic replay requires reproducible IDs. Blueprint Section 36.
+
+3. quantity is the portfolio final_quantity when authorized, else 0. The
+   portfolio engine already applied every reduction. No further reduction
+   at authorization time.
+
+4. exposure defaults to quantity * entry, overridable by the caller.
+
+5. Fail closed. authorized is False if any of the three upstream decisions
+   is not approved. execute_authorized refuses with BrokerError.
+
+6. limit_price invariant matches the order state machine. MARKET forbids
+   it, LIMIT requires it. Cross-field validated.
+
+7. created_at is caller-supplied. No datetime.now() inside. Blueprint
+   Section 10.
+
+8. Authorization is not persisted by the broker. Persistence is Stage E.
+
+## 2026-10-02 — Stage C complete
+The common decision pipeline is done. From here forward, sim, paper, and
+live will all use the same code: validator -> risk -> portfolio ->
+authorization -> broker. Only the broker adapter changes. Blueprint
+Sections 4 and 68 are now structural facts, not goals.

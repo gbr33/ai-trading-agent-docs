@@ -49,3 +49,6 @@ rejected
 - C2 complete: deterministic risk engine with sizing and exposure caps (code commit 005cfdf).
 
 - C3 complete: deterministic portfolio engine with combined and pending exposure (code commit 7400aef).
+
+- C4 complete: ExecutionAuthorization object and authorized broker path (code commit 3ffe76b).
+- Stage C complete: validator, risk, portfolio, and authorization. The common decision pipeline is done.
