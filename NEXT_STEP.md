@@ -1,15 +1,11 @@
 # NEXT STEP
 
-Stage D, Step 6 — AI integration.
+Stage D, Step 7 — Strategy module wiring into ReplayEngine.
 
-Goal: (a) an AI client abstraction in app/ai/engine.py that turns a
-structured context (symbol, features, regime, news, opportunity, portfolio
-context) into an AIProposal via a pluggable provider; (b) a concrete
-HeuristicProvider for deterministic testing with no external API; (c) a
-strategy module that composes scanner -> regime -> news -> AI ->
-ProposalBundle and plugs into the ReplayEngine callback.
-
-Fail-safe behavior: any provider error, timeout, malformed output, or
-schema violation yields HOLD. No provider has execution authority.
+Goal: a Strategy module that composes feature engine -> scanner -> regime
+-> news -> AI provider -> ProposalBundle, and plugs into the ReplayEngine
+strategy callback. It maintains a rolling per-symbol bar history so the
+feature and regime engines can be called. It has no side effects and does
+not touch the broker.
 
 Awaiting: instructor to issue the step contract.

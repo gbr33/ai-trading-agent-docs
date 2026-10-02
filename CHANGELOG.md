@@ -55,3 +55,4 @@ rejected
 
 - D1 complete: event-driven replay engine driving the full decision pipeline end to end (code commit 7c10273).
 \n- D2 complete: deterministic technical feature engine (code commit 04cf42e).\n\n- D3 complete: deterministic opportunity scanner (code commit 46561eb).\n\n- D4 complete: deterministic market regime classifier (code commit e3c2e9e).\n\n- D5 complete: deterministic point-in-time news engine (code commit b78921a).\n
+- D6 complete: AI provider abstraction, heuristic provider, and fail-safe propose_safely wrapper (code commit 2e16705).

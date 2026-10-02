@@ -629,3 +629,35 @@ min_relevance=0.1 filtered the record out first. Fix: relevance=0.5
 (passes filter) with confidence=0.0 (zeroes weight). Lesson: a test
 targeting a downstream code path must first satisfy every upstream
 filter.
+
+## 2026-10-02 — D6 design decisions
+AI provider abstraction:
+
+1. Provider is an ABC. Same pattern as Broker. Concrete implementations
+   in later stages (real LLM). Tests and D7 use HeuristicProvider.
+
+2. No network in D6. Heuristic is deterministic and offline.
+
+3. propose_safely is the only path the pipeline uses. Any exception from
+   the provider is caught and converted to HOLD. Fail-safe by construction.
+   Blueprint Section 79.
+
+4. HOLD carries a reason in thesis. Journal records it. No silent no-ops.
+
+5. risk_flags names blocking news categories. Validator's
+   blocking_risk_flags controls whether they actually veto.
+
+6. SELL is not produced in D6. The AI does not decide exits. Exit
+   management is D9. Heuristic proposes BUY or HOLD only.
+
+7. Portfolio context is read-only. Provider cannot reach the broker.
+
+8. AIResponse wraps the proposal and adds provider metadata for replay.
+
+9. No prompt construction in D6. Real-LLM concern for later stages.
+
+## 2026-10-02 — Scope correction
+NEXT_STEP.md after D5 grouped three concerns into D6. D6 is now AI
+provider abstraction only. Strategy wiring becomes D7. Position
+management, exit management, flattening, and reconciliation shift
+accordingly.
