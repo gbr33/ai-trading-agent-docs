@@ -1,9 +1,10 @@
 # PROJECT STATE
 
-- Current stage: B — Simulated Broker
-- Last completed step: B4 — Fill engine
-- Next step: B5 — Apply fills; modify_order; close_position
-- Code repo last commit: c69ec9b
+- Current stage: C — Common Decision Pipeline (Stage B complete)
+- Last completed step: B5 — Apply fills; modify_order; close_position; 
+SELL fills
+- Next step: C1 — Shared validator
+- Code repo last commit: 4d331e1
 - Docs repo last commit: (updated on push)
 
 ## Stage A deliverables
@@ -13,25 +14,26 @@ PointInTimeEventStream
 - app/data/quality.py      — fail-closed dataset validator
 - app/runtime/clock.py     — simulation clock, session derivation
 
-## Stage B deliverables so far
+## Stage B deliverables (complete)
 - app/backtest/accounting.py      — SimulatedAccount + Position 
 (long-only)
-- app/backtest/fills.py           — FillModel, FillResult, try_fill (BUY 
-only)
+- app/backtest/fills.py           — FillModel, FillResult, try_fill (BUY + 
+SELL)
 - app/execution/state_machine.py  — SimulatedOrder + transition graph
 - app/execution/broker.py         — abstract Broker interface + typed 
 exceptions
-- app/execution/simulated.py      — SimulatedBroker (no fills yet)
+- app/execution/simulated.py      — SimulatedBroker: order lifecycle, 
+process_bar,
+                                    modify_order, close_position
 
 ## Test count
-79 (A) + 24 (B1) + 1 (B1 regression) + 40 (B2) + 35 (B3) + 31 (B4) = 210 
-tests.
-CI green on every commit.
+235 tests across Stages A and B. CI green on every commit.
 
 ## Known issues
-- Authorization check deferred to Stage C.
-- modify_order and close_position still raise NotImplementedError. B5.
-- Fill engine handles BUY only. SELL-side deferred to B5 (exits).
+- Authorization check deferred to Stage C. Blueprint Section 60 Invariant 
+2.
+- No shared volume budget within a bar. Each order gets its own cap. 
+Documented.
 - Session verification deferred to historical qualification gate.
 - CI dependencies unpinned. Stage F task.
 

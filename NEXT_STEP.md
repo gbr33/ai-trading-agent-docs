@@ -1,11 +1,14 @@
 # NEXT STEP
 
-Stage B, Step 5 — Apply fills; modify_order; close_position.
+Stage C, Step 1 — Shared validator.
 
-Goal: wire the fill engine into SimulatedBroker. Add a method that takes a
-market bar and processes every ACCEPTED or PARTIALLY_FILLED order through
-try_fill, updating the order state machine and SimulatedAccount on each
-result. Implement modify_order and close_position. Add SELL-side fill
-support so close_position can use it.
+Goal: a deterministic DecisionValidator that sits between AI output and 
+the
+risk engine. It checks schema, action, symbol, confidence threshold,
+opportunity threshold, risk flags, entry/stop/target validity, session 
+state,
+and data freshness. A failed validation means NO ORDER. The validator 
+never
+modifies the risk policy to accommodate AI. Blueprint Sections 17, 19.
 
 Awaiting: instructor to issue the step contract.

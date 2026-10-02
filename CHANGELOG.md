@@ -36,3 +36,9 @@ implementation
 fills,
   and next-bar-only timing (code commit c69ec9b).
 
+- B5 complete: apply fills in broker, add modify_order, close_position,
+  SELL-side fills (code commit 4d331e1). Fixed a real bug: try_fill 
+rejected
+  PARTIALLY_FILLED orders, blocking continuation fills across bars. Now
+  accepts both ACCEPTED and PARTIALLY_FILLED.
+- Stage B complete: simulated broker fully functional end to end.

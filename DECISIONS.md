@@ -263,3 +263,56 @@ at
 8. Decimal throughout. Fill price quantized to 6 dp.
 
 9. BUY only for B4. SELL-side deferred to B5 with exits.
+
+## 2026-09-30 — B5 design decisions
+Apply fills; modify_order; close_position; SELL fills:
+
+1. Broker is the only place fills are applied. try_fill stays pure.
+   process_bar orchestrates: pull working orders, try each, apply.
+   Blueprint Sections 25, 27.
+
+2. Fill model injected at construction. Default is zero friction. The
+   backtest engine will supply the configured model.
+
+3. SELL price direction is symmetric to BUY. Sell at bid, accept worse
+   prices. LIMIT SELL caps at the limit; we never accept less.
+
+4. SELL fills require an existing position. If account.close_position
+   raises, the order is CANCELLED and no account state changes. Fail
+   closed. Blueprint Section 58.
+
+5. No shared volume budget within a bar. Documented simplification.
+
+6. modify_order is not cancel + new. It updates the existing order in
+   place. Preserves the audit thread. Cannot change order type via modify.
+
+7. close_position bypasses fill friction. The caller supplies the price.
+   Used by flatten engine and manual exits.
+
+8. process_bar returns the list of applied fills for journaling.
+   Blueprint Section 31.
+
+9. Order iteration in insertion order. Deterministic. Blueprint Section 
+36.
+
+## 2026-09-30 — Bug: try_fill rejected PARTIALLY_FILLED
+The first version of try_fill accepted only ACCEPTED orders. A partial 
+fill
+moved the order to PARTIALLY_FILLED, and the next bar's try_fill raised
+ValueError instead of continuing to fill. This broke multi-bar fills 
+entirely.
+Caught by test_process_bar_partial_then_full_on_next_bar. Fixed: try_fill 
+now
+accepts both ACCEPTED and PARTIALLY_FILLED. Lesson: when a status 
+transition
+enables a repeatable operation (filling), the gate must include every 
+state
+that operation can run in, not just the initial state.
+
+## 2026-09-30 — Lesson: scripted multi-file edits
+The B5 correction step needed 8 coordinated edits across 3 files. Doing 
+them
+by hand in nano would have been error-prone. A single Python script with
+explicit `assert` guards for each pattern is safer: it fails loudly if any
+pattern does not match, so no partial state lands. Reuse this pattern for
+future multi-file corrections.
