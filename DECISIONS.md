@@ -528,3 +528,32 @@ validators for all caller-supplied values.
 variance ** 0.5 infers as Any in mypy strict mode. Annotate the variance
 expression as float and cast the final return. This is the pattern for any
 numeric expression where the operand types are not visible to the checker.
+
+## 2026-10-02 — D3 design decisions
+Opportunity scanner:
+
+1. Pure functions. scan_one and scan_many. Same input, same output.
+
+2. Fail closed. Missing rvol, rsi, or momentum short-circuits to None.
+
+3. Scanner filters and ranks. It does not select. Selection is a caller
+   concern.
+
+4. Configurable thresholds. RVOL > 3 and the RSI band are config values,
+   not code constants. Blueprint Section 14.
+
+5. Scoring weights sum to 1.0, enforced by config validation. Score
+   remains in [0, 1].
+
+6. Clamping on every component. One strong signal cannot dominate.
+
+7. Reasons list is auditable. Journal in Stage E will persist it.
+
+8. Deterministic tiebreak: (-score, symbol, timestamp). No insertion-order
+   dependency.
+
+9. require_breakout and require_trend are optional hard filters. Off by
+   default so the scanner works as a pure ranker.
+
+10. No _tz, no clock, no datetime.now(). Time comes from the snapshot.
+    Blueprint Section 10.
