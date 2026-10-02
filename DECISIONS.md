@@ -489,3 +489,42 @@ callback, so on bar 2 the first order had already filled and the symbol
 cap was exhausted. The engine correctly rejected the second BUY. The
 test was wrong, not the engine. Lesson: tests that emit a proposal on
 every bar must reason about post-fill portfolio state, or emit only once.
+
+## 2026-10-02 — D2 design decisions
+Feature engine:
+
+1. Pure function: history-in, snapshot-out. Deterministic.
+
+2. The current bar is the last element of history. No separate current
+   parameter. Future bars are never seen.
+
+3. None means insufficient history, not zero. Fail-closed. Callers must
+   check. Blueprint Section 58.
+
+4. RVOL excludes the current bar from the baseline. Blueprint Section 13.
+
+5. Wilder RSI and Wilder ATR. Standard industry definitions.
+
+6. RSI edge cases handled explicitly: all-gains -> 100, all-losses -> 0,
+   flat -> 50.
+
+7. All prices use Decimal. Ratios and returns use float.
+
+8. Trend is relative to two SMAs, no hidden threshold.
+
+9. Breakout is close-based, not intraday-high-based.
+
+10. No caching, no incremental updates. Full recompute per bar. Stage F
+    optimization if needed.
+
+## 2026-10-02 — Lesson: test helper defaults must respect validators
+The bar helper defaulted high=101, low=99, so any close above 101 (in
+trend, momentum, and other tests) failed the MarketEvent OHLC validator.
+Fix: derive high/low from close unless overridden. Lesson: when a helper
+wraps a model with cross-field validators, its defaults must satisfy those
+validators for all caller-supplied values.
+
+## 2026-10-02 — Lesson: float variance inference
+variance ** 0.5 infers as Any in mypy strict mode. Annotate the variance
+expression as float and cast the final return. This is the pattern for any
+numeric expression where the operand types are not visible to the checker.
