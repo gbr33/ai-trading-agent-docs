@@ -1,11 +1,15 @@
 # NEXT STEP
 
-Stage D, Step 5 — News integration.
+Stage D, Step 6 — AI integration.
 
-Goal: a deterministic news engine that ingests structured news records,
-distinguishes NEWS_TIMESTAMP from PROCESSING_TIMESTAMP, filters to only
-items available at the simulated decision time, and produces a
-NewsSnapshot for a symbol. The engine does not call external services and
-does not use AI. Blueprint Section 16.
+Goal: (a) an AI client abstraction in app/ai/engine.py that turns a
+structured context (symbol, features, regime, news, opportunity, portfolio
+context) into an AIProposal via a pluggable provider; (b) a concrete
+HeuristicProvider for deterministic testing with no external API; (c) a
+strategy module that composes scanner -> regime -> news -> AI ->
+ProposalBundle and plugs into the ReplayEngine callback.
+
+Fail-safe behavior: any provider error, timeout, malformed output, or
+schema violation yields HOLD. No provider has execution authority.
 
 Awaiting: instructor to issue the step contract.

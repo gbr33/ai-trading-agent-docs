@@ -590,3 +590,42 @@ When a tuple contains an implicitly concatenated f-string, ruff ISC004
 fires unless the whole concatenation is wrapped in parentheses. Fix:
 wrap the concatenated parts in a nested parenthesized expression inside
 the tuple.
+
+## 2026-10-02 — D5 design decisions
+News engine:
+
+1. Pure function. records-in, snapshot-out. No external calls.
+
+2. Point-in-time boundary requires BOTH news_timestamp <= as_of AND
+   processing_timestamp <= as_of. Strictest interpretation. Prevents
+   lookahead where an item was published earlier but ingested later.
+
+3. processing_timestamp must be >= news_timestamp. Otherwise the record
+   is malformed and is rejected at construction.
+
+4. None means "unavailable", not "neutral". Snapshot with zero records
+   has aggregate_sentiment=None.
+
+5. Sentiment aggregation weighted by relevance * confidence.
+
+6. max_age_seconds bounds the lookback. Prevents stale headlines from
+   influencing decisions.
+
+7. max_records_per_symbol bounds the snapshot. Keeps the AI prompt
+   within size limits.
+
+8. Sort by (-news_timestamp, news_id). Deterministic.
+
+9. blocking_categories is config-supplied. Engine flags them; caller
+   decides what to do.
+
+10. No prompt injection defense at this layer. Structured records only.
+    D6 (AI integration) is where untrusted-text handling matters.
+
+## 2026-10-02 — Lesson: test premise must satisfy upstream filters
+test_aggregate_sentiment_none_when_all_zero_weight initially set
+relevance=0.0 to trigger the zero-weight aggregate branch, but
+min_relevance=0.1 filtered the record out first. Fix: relevance=0.5
+(passes filter) with confidence=0.0 (zeroes weight). Lesson: a test
+targeting a downstream code path must first satisfy every upstream
+filter.
