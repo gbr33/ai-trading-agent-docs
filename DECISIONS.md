@@ -316,3 +316,32 @@ by hand in nano would have been error-prone. A single Python script with
 explicit `assert` guards for each pattern is safer: it fails loudly if any
 pattern does not match, so no partial state lands. Reuse this pattern for
 future multi-file corrections.
+
+## 2026-10-02 — C1 design decisions
+AI proposal schema and validator:
+
+1. AIProposal is frozen, extra fields rejected. Blueprint Section 17.
+2. Validator is a pure function. No side effects. Failures are data, not
+   exceptions.
+3. HOLD short-circuits and approves as a no-op.
+4. All non-HOLD checks always run. The result carries every check for the
+   audit trail.
+5. AI does not propose prices. Entry, stop, target come from the strategy
+   layer. The validator sees both and validates the combination.
+6. ValidationConfig is frozen and injected. No hidden thresholds.
+7. Data freshness is symmetric (abs of the delta). Catches lookahead and
+   stale data.
+8. Any quality flag on the bar vetoes the decision.
+9. blocking_risk_flags is config-supplied. The AI does not decide what is
+   dangerous.
+10. No journal write in this step. The validator returns a result; recording
+    is a later concern.
+
+## 2026-10-02 — Lesson: regex field edits need trailing-comma care
+The regex replacement for `entry: "object"` -> `entry: Decimal` left a
+trailing comma, producing invalid Python. Regex edits on class field
+declarations must account for the fact that the last field in a block may
+have no comma and that class bodies do not accept trailing commas after a
+bare annotation. Fix was a second pass to strip the commas. Lesson: after
+any automated multi-line edit, run ruff immediately and treat syntax errors
+as expected failure modes, not surprises.

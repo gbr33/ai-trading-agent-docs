@@ -42,3 +42,6 @@ rejected
   PARTIALLY_FILLED orders, blocking continuation fills across bars. Now
   accepts both ACCEPTED and PARTIALLY_FILLED.
 - Stage B complete: simulated broker fully functional end to end.
+
+- C1 complete: AI proposal schema and deterministic decision validator
+  (code commit f2b7999).
