@@ -345,3 +345,43 @@ have no comma and that class bodies do not accept trailing commas after a
 bare annotation. Fix was a second pass to strip the commas. Lesson: after
 any automated multi-line edit, run ruff immediately and treat syntax errors
 as expected failure modes, not surprises.
+
+## 2026-10-02 — C2 design decisions
+Risk engine:
+
+1. Pure function. evaluate_risk returns a RiskDecision. No side effects.
+
+2. Failures are data, not exceptions. Same pattern as the validator.
+
+3. One risk policy for sim, paper, live. This module is the single source
+   of truth. No stage-specific variants. Blueprint Section 68.
+
+4. Sizing is deterministic and integer. floor on shares. Blueprint Section 21.
+
+5. Exposure caps are fractions of equity. new_position_value / equity <=
+   cap. Absolute dollar caps are a Stage F refinement.
+
+6. Equity is the sizing base, not cash. Cash sufficiency is the broker''s
+   job at fill time.
+
+7. Sector map is config-supplied. Symbols not in the map default to
+   UNKNOWN. UNKNOWN still counts toward total exposure.
+
+8. Adds to existing positions are allowed. The open-positions check is
+   bypassed when the symbol is already held. Sizing still applies all
+   exposure caps.
+
+9. Cooldown is optional. If last_trade_time is None or cooldown is 0,
+   the check passes.
+
+10. Sizing reduction is the last step. Checks 1-6 and 9-12 run against the
+    raw sized quantity. Exposure caps may reduce the final size. If
+    reduction drives size to 0, the position_size_above_zero check fails
+    and the decision is rejected.
+
+## 2026-10-02 — Lesson: nested test with default config
+test_basic_sizing_from_stop_distance expected 1000 shares but the default
+config caps symbol exposure at 30% of equity (300 shares). The engine was
+correct; the test setup was wrong. Lesson: tests that exercise one specific
+mechanism must neutralize unrelated config values, or they silently test
+something else.

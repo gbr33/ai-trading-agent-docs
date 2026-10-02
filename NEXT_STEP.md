@@ -1,12 +1,10 @@
 # NEXT STEP
 
-Stage C, Step 2 — Risk engine.
+Stage C, Step 3 — Portfolio engine.
 
-Goal: a deterministic RiskEngine that is the highest authority over trade
-admission. Evaluates account-level risk (equity, daily loss), trade-level
-risk (entry, stop, target, risk per share, max dollar risk), position limits
-(max open, max exposure, symbol, sector), and activity limits (max daily
-trades, cooldown, entry cutoff). Computes position size from stop distance.
-Returns a RiskDecision. Blueprint Sections 20, 21.
+Goal: a deterministic PortfolioEngine that evaluates a risk-approved trade in
+the context of existing positions and pending orders. Considers symbol
+exposure, sector exposure, market exposure, gross and net exposure, and
+available capital. Approves, reduces, or rejects. Blueprint Sections 22, 46.
 
 Awaiting: instructor to issue the step contract.

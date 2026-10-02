@@ -45,3 +45,5 @@ rejected
 
 - C1 complete: AI proposal schema and deterministic decision validator
   (code commit f2b7999).
+
+- C2 complete: deterministic risk engine with sizing and exposure caps (code commit 005cfdf).

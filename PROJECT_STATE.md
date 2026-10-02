@@ -1,9 +1,9 @@
 # PROJECT STATE
 
 - Current stage: C — Common Decision Pipeline
-- Last completed step: C1 — AI proposal schema and deterministic validator
-- Next step: C2 — Risk engine
-- Code repo last commit: f2b7999
+- Last completed step: C2 — Risk engine
+- Next step: C3 — Portfolio engine
+- Code repo last commit: 005cfdf
 - Docs repo last commit: (updated on push)
 
 ## Deliverables so far
@@ -15,14 +15,14 @@ Stage B:
 - app/execution/state_machine.py, app/execution/broker.py, app/execution/simulated.py
 
 Stage C:
-- app/ai/engine.py          — AI proposal schema
+- app/ai/engine.py           — AI proposal schema
 - app/validation/decision.py — deterministic decision validator
+- app/risk/engine.py         — deterministic risk engine with sizing
 
 ## Test count
-235 (A + B) + 29 (C1) = 264 tests. CI green on every commit.
+264 (A + B + C1) + 23 (C2) = 287 tests. CI green on every commit.
 
 ## Known issues
-- Risk engine not yet implemented. C2.
 - Portfolio engine not yet implemented. C3.
 - Authorization object not yet implemented. C4.
 - Session verification deferred to historical qualification gate.
