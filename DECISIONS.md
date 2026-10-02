@@ -862,3 +862,34 @@ model_post_init has a positional-only __context parameter; ruff wants
 /, before the type. __enter__ returning the class should use Self rather
 than the class name. Both are one-line fixes but ruff auto-fix does not
 apply them.
+
+## 2026-10-02 - E2 design decisions
+Trace query:
+
+1. market_event_id added to ai_decisions as a nullable column. Documented
+   schema gap from D-stage code. E3 wiring populates it. E2 uses it
+   opportunistically.
+
+2. Helpers by decision_id, not by row id. The natural key for validation,
+   risk, and portfolio is decision_id. Callers do not know row ids.
+
+3. missing_links names the broken step. Never raises. Never guesses.
+
+4. Read-only. No writes. No backfill.
+
+5. Closed trades vs open trades. A trade without an exit fill is a
+   legitimately open trade, not a broken chain.
+
+6. No recursion. Linear lookups.
+
+## 2026-10-02 - Lesson: FK constraints vs corrupt-row tests
+The trades table declares a foreign key on exit_fill_id. A test that
+wanted to simulate a broken exit_fill link could not insert the corrupt
+row because SQLite rejected it. Fix: disable foreign_keys for that single
+insert, re-enable after. The FK is correct; the test just needed a
+narrower scope for its corruption.
+
+## 2026-10-02 - Lesson: audit spine now closes the loop
+trace_trade walks from a trade back to the market event that triggered
+it. Blueprint Section 32 is now a structural fact, not a goal. E3 will
+populate every link during replay.

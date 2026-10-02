@@ -69,3 +69,5 @@ rejected
 - Stage D complete: full event-driven replay with features, scanner, regime, news, AI, strategy, position management, exits, flatten, and reconciliation.
 
 - E1 complete: SQLite journal with full 16-table schema and 9 typed insert/get pairs for the audit spine (code commit 92dd8a2).
+
+- E2 complete: trace_trade walking the full audit chain (code commit afbe1b4).
