@@ -718,3 +718,48 @@ test_register_rejects_zero_fill tried to verify the zero-quantity guard
 inside register_entry, but FillResult refuses qty=0 at construction, so
 the guard is unreachable through normal call paths. Rewrote the test to
 verify the outer contract.
+
+## 2026-10-02 - D9 design decisions
+Exit engine:
+
+1. Separate from the broker. The broker executes; the engine decides.
+
+2. Conservative ambiguous-bar rule. When both stop and target fall inside
+   the same bar, assume stop first. Configurable; on by default. Blueprint
+   Section 28.
+
+3. Exits bypass the decision pipeline. No validator, no risk, no
+   portfolio, no AI. A stop is a pre-authorized order.
+
+4. close_position is the execution path. Reuses existing broker code.
+
+5. Plan removal only after successful exit. If the broker raises, the plan
+   stays for the next bar.
+
+6. Priority order fixed: stop, target, time, flatten.
+
+7. Flatten uses the clock session, not the bar session. The clock is
+   authoritative.
+
+8. Engine wiring is minimal: optional exit_engine parameter on
+   ReplayEngine. Called after process_bar and before the strategy.
+
+9. Fail-soft: if one symbol raises, the remaining symbols are still
+   evaluated.
+
+10. No journal. Stage E.
+
+## 2026-10-02 - Lesson: bar session vs clock session
+The flatten test set bar.session to FLATTENING but left the clock at
+09:32 ET (TRADING). The exit engine correctly read the clock, not the
+bar. Test bar and clock must be consistent.
+
+## 2026-10-02 - Lesson: regex anchors are fragile after ruff reformats
+Multiple regex-based edits failed across D9 because ruff reformatted the
+file between write and edit. Safer approach: locate a function by its def
+line, find the next def test_ boundary, replace the whole slice.
+
+## 2026-10-02 - Lesson: test setup must open the account position
+_setup registered a PositionPlan but did not open an account position.
+broker.close_position raised BrokerError; the engine correctly caught it;
+tests then expected an exit. The source was right, the setup was wrong.
