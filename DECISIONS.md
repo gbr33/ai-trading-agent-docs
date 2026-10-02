@@ -385,3 +385,30 @@ config caps symbol exposure at 30% of equity (300 shares). The engine was
 correct; the test setup was wrong. Lesson: tests that exercise one specific
 mechanism must neutralize unrelated config values, or they silently test
 something else.
+
+## 2026-10-02 — C3 design decisions
+Portfolio engine:
+
+1. Pure function. Same pattern as validator and risk engine.
+
+2. Pending order awareness is the key value-add over the risk engine.
+   Risk sees filled positions; portfolio sees filled plus working.
+
+3. Correlation is deferred honestly. Without price history in this module,
+   any correlation number would be fabricated. Stage F adds it with real
+   price data. Documented as a known issue.
+
+4. Pending SELL orders offset net long exposure. Prevents the portfolio
+   engine from rejecting a new BUY when the trader is about to exit.
+
+5. Capital check at portfolio level, not risk level. Risk sizes on equity;
+   portfolio verifies cash covers the sized quantity plus outstanding BUY
+   obligations. First line of defense against overcommitment.
+
+6. Size reduction is the last step. Same pattern as the risk engine.
+
+7. Duplicate pending symbol rejected by default. Config can allow it.
+   Rationale: two working orders on the same symbol are almost always a
+   caller bug.
+
+8. Engine and its types live in controller.py, matching Blueprint Section 5.

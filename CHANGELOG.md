@@ -47,3 +47,5 @@ rejected
   (code commit f2b7999).
 
 - C2 complete: deterministic risk engine with sizing and exposure caps (code commit 005cfdf).
+
+- C3 complete: deterministic portfolio engine with combined and pending exposure (code commit 7400aef).
