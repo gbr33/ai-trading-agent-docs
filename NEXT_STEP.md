@@ -1,10 +1,11 @@
 # NEXT STEP
 
-Stage D, Step 4 — Regime integration.
+Stage D, Step 5 — News integration.
 
-Goal: a deterministic market regime classifier that consumes a sequence of
-MarketEvents and returns a RegimeState (TRENDING, RANGING, HIGH_VOLATILITY,
-LOW_VOLATILITY, RISK_ON, RISK_OFF, UNKNOWN). Deterministic, no AI. Unknown
-by default when inputs are insufficient. Blueprint Section 15.
+Goal: a deterministic news engine that ingests structured news records,
+distinguishes NEWS_TIMESTAMP from PROCESSING_TIMESTAMP, filters to only
+items available at the simulated decision time, and produces a
+NewsSnapshot for a symbol. The engine does not call external services and
+does not use AI. Blueprint Section 16.
 
 Awaiting: instructor to issue the step contract.

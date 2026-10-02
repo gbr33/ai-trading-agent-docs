@@ -557,3 +557,36 @@ Opportunity scanner:
 
 10. No _tz, no clock, no datetime.now(). Time comes from the snapshot.
     Blueprint Section 10.
+
+## 2026-10-02 — D4 design decisions
+Regime classifier:
+
+1. Pure function. classify_regime(history, config). Same input, same output.
+
+2. No AI, no news. RISK_ON and RISK_OFF are not implemented. They need
+   breadth or news data we do not have. Documented, not faked.
+
+3. Linear regression on closes, not on returns. Closes give a slope with a
+   natural "fraction per bar" unit after normalization.
+
+4. R-squared gates the trend label. High slope with low R-squared means
+   noise with drift, not a trend.
+
+5. Volatility takes precedence over trend. A high-volatility period is
+   labeled HIGH_VOLATILITY even if a trend is visible.
+
+6. Annualized volatility via sqrt(252). Standard convention.
+
+7. UNKNOWN on insufficient data. Fail-closed. Blueprint Section 15.
+
+8. Reasons list is auditable. Stage E will persist it.
+
+9. Ordered check chain, first match wins. Deterministic, no weights.
+
+10. No _tz, no clock, no datetime.now(). Time comes from input data.
+
+## 2026-10-02 — Lesson: ruff ISC004 on multi-line f-strings in tuples
+When a tuple contains an implicitly concatenated f-string, ruff ISC004
+fires unless the whole concatenation is wrapped in parentheses. Fix:
+wrap the concatenated parts in a nested parenthesized expression inside
+the tuple.
