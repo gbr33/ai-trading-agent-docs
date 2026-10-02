@@ -1,12 +1,13 @@
 # NEXT STEP
 
-Stage D, Step 11 - Reconciliation.
+Stage E, Step 1 - Journal database schema.
 
-Goal: a reconciliation engine that compares internal account state
-(SimulatedAccount positions) against broker-reported state (broker
-get_positions) and detects any mismatch. In the simulated broker these
-should always agree; the engine is a structural check that will catch
-regressions and will be required for Stage G paper trading. Returns a
-structured ReconciliationResult. Blueprint Section 51.
+Goal: a SQLite-backed journal with the full schema from Blueprint Section
+31: market_events, feature_snapshots, opportunities, ai_decisions,
+validation_decisions, risk_decisions, portfolio_decisions, market_regimes,
+news_events, orders, fills, positions, trades, health_events,
+system_events, experiments. Every table has a primary key and the
+cross-references needed for full trade traceability (Blueprint Section
+32). No write path yet; this step is schema plus repository.
 
 Awaiting: instructor to issue the step contract.

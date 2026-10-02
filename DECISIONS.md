@@ -796,3 +796,35 @@ defeated the retry mechanism entirely, since a transient failure looks
 exactly like no progress. Lesson: when a loop is bounded by a retry
 count, do not add an early exit based on progress; the bound is the
 contract.
+
+## 2026-10-02 - D11 design decisions
+Reconciliation engine:
+
+1. Read-only. Reports mismatches; does not fix them. Blueprint Section 51.
+
+2. Broker passed at call time, not construction. One engine instance can
+   reconcile against any broker.
+
+3. Symbols sorted. Deterministic iteration and output.
+
+4. Tolerance in shares. Integer. Default 0 (exact match).
+
+5. Only quantities compared. Average price drift, open orders, and fills
+   are Stage G concerns.
+
+6. No exceptions caught. If the broker is not connected,
+   BrokerNotConnected propagates.
+
+7. run_at from clock.now. No wall-clock dependency.
+
+8. reasons list summarizes counts, not free-form text.
+
+## 2026-10-02 - Stage D complete
+Full event-driven replay is done. The ReplayEngine composes the feature
+engine, regime classifier, news engine, opportunity scanner, AI provider,
+strategy pipeline, position manager, exit engine, flatten engine, and
+reconciliation engine. Blueprint Sections 33 and 67 are now structural
+facts, not goals.
+
+Next: Stage E - audit and journal. The database becomes the system's
+permanent memory. Blueprint Sections 31 and 32.

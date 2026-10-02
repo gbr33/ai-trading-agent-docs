@@ -64,3 +64,6 @@ rejected
 - D9 complete: exit engine with stop, target, time, and flatten triggers (code commit dd7d7d5).
 
 - D10 complete: flatten engine with cancel, close, and verify (code commit fda5718).
+
+- D11 complete: reconciliation engine comparing internal and broker positions (code commit f013040).
+- Stage D complete: full event-driven replay with features, scanner, regime, news, AI, strategy, position management, exits, flatten, and reconciliation.
