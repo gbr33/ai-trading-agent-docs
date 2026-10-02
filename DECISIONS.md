@@ -763,3 +763,36 @@ line, find the next def test_ boundary, replace the whole slice.
 _setup registered a PositionPlan but did not open an account position.
 broker.close_position raised BrokerError; the engine correctly caught it;
 tests then expected an exit. The source was right, the setup was wrong.
+
+## 2026-10-02 - D10 design decisions
+Flatten engine:
+
+1. Once-per-session, not per-bar. The engine tracks a per-day flag and
+   calls the flat engine only when the clock first enters FLATTENING.
+
+2. Cancel first, then close. Working entries that would otherwise fill
+   during the flatten window are cancelled before positions are closed.
+
+3. Retry with a fixed price. No price chasing. max_close_attempts bounds
+   the loop. Retries continue even when an attempt made no progress,
+   because the loop bound is the attempt count, not the progress flag.
+
+4. Verify after closing, do not assume. broker.get_positions() is queried
+   after the close attempts. Blueprint Section 48.
+
+5. raise_on_failure is opt-in. Default False so the engine reports state
+   without raising.
+
+6. FlattenResult carries every symbol touched and every reason recorded.
+   Stage E will persist it.
+
+7. Session gate uses clock.session, not bar.session. Same rule as D9.
+
+8. No datetime.now(). Day tracking uses clock.trading_day.
+
+## 2026-10-02 - Lesson: redundant progress checks defeat retry loops
+The first flatten engine broke the retry loop on "no progress". That
+defeated the retry mechanism entirely, since a transient failure looks
+exactly like no progress. Lesson: when a loop is bounded by a retry
+count, do not add an early exit based on progress; the bound is the
+contract.

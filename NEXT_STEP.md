@@ -1,10 +1,12 @@
 # NEXT STEP
 
-Stage D, Step 10 - Flatten engine.
+Stage D, Step 11 - Reconciliation.
 
-Goal: a dedicated FlatEngine that runs at the configured flatten time,
-cancels working entry orders, closes any remaining positions, waits for
-confirmed fills, and verifies the account has zero exposure. Returns a
-structured result. Blueprint Section 48.
+Goal: a reconciliation engine that compares internal account state
+(SimulatedAccount positions) against broker-reported state (broker
+get_positions) and detects any mismatch. In the simulated broker these
+should always agree; the engine is a structural check that will catch
+regressions and will be required for Stage G paper trading. Returns a
+structured ReconciliationResult. Blueprint Section 51.
 
 Awaiting: instructor to issue the step contract.

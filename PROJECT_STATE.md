@@ -1,9 +1,9 @@
 # PROJECT STATE
 
 - Current stage: D - Complete Replay
-- Last completed step: D9 - Exit engine
-- Next step: D10 - Flatten engine
-- Code repo last commit: dd7d7d5
+- Last completed step: D10 - Flatten engine
+- Next step: D11 - Reconciliation
+- Code repo last commit: fda5718
 - Docs repo last commit: (updated on push)
 
 ## Stage D progress
@@ -15,19 +15,17 @@
 - D6  OK AI provider abstraction
 - D7  OK Strategy pipeline
 - D8  OK Position manager
-- D9  OK Exit engine (app/execution/exits.py)
-- D10    Flatten engine
+- D9  OK Exit engine
+- D10 OK Flatten engine (app/execution/flatten.py)
 - D11    Reconciliation
 
 ## Test count
-543 (A through D8) + 34 (D9) = 577 tests. CI green on every commit.
+577 (A through D9) + 49 (D10) = 626 tests. CI green on every commit.
 
 ## Known issues
 - submit_order remains public; execute_authorized is the production path.
 - Regime classifier does not emit RISK_ON or RISK_OFF.
 - AI provider is only the heuristic. No real LLM provider yet.
-- Exit engine handles per-bar exits. End-of-session flatten that cancels
-  working orders and verifies zero exposure is D10.
 - Correlation-adjusted portfolio limits deferred to Stage F.
 - Session verification deferred to historical qualification gate.
 - CI dependencies unpinned. Stage F task.

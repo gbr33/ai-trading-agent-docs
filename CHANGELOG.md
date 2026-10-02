@@ -62,3 +62,5 @@ rejected
 - D8 complete: position manager tracking exit parameters per symbol (code commit b264cb3).
 
 - D9 complete: exit engine with stop, target, time, and flatten triggers (code commit dd7d7d5).
+
+- D10 complete: flatten engine with cancel, close, and verify (code commit fda5718).
