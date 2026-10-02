@@ -828,3 +828,37 @@ facts, not goals.
 
 Next: Stage E - audit and journal. The database becomes the system's
 permanent memory. Blueprint Sections 31 and 32.
+
+## 2026-10-02 - E1 design decisions
+SQLite journal:
+
+1. SQLite, stdlib only. No new dependency. Single file. Postgres and
+   DuckDB are later stages.
+
+2. Raw sqlite3, no ORM. Explicit DDL and SQL. Easier to audit and replay.
+
+3. Journal does not generate IDs. Callers supply deterministic IDs. This
+   is what makes the D1-D11 chain reproduce identically on replay.
+
+4. Datetimes stored as ISO 8601 with timezone. Round-trip preserves the
+   offset via datetime.fromisoformat.
+
+5. Enums stored as their .value strings.
+
+6. JSON columns for tuple fields (risk_flags_json, checks_json, etc).
+   json.dumps with sort_keys=True for determinism.
+
+7. transaction() is the only way to write multiple rows atomically.
+
+8. Foreign keys enforced. PRAGMA foreign_keys = ON.
+
+9. WAL mode. Concurrent reads while writing.
+
+10. No schema versioning in E1. Schema version constant is recorded for
+    Stage F to build migrations on.
+
+## 2026-10-02 - Lesson: ruff PYI063 and PYI034 on Pydantic context
+model_post_init has a positional-only __context parameter; ruff wants
+/, before the type. __enter__ returning the class should use Self rather
+than the class name. Both are one-line fixes but ruff auto-fix does not
+apply them.

@@ -1,13 +1,11 @@
 # NEXT STEP
 
-Stage E, Step 1 - Journal database schema.
+Stage E, Step 2 - Trace query.
 
-Goal: a SQLite-backed journal with the full schema from Blueprint Section
-31: market_events, feature_snapshots, opportunities, ai_decisions,
-validation_decisions, risk_decisions, portfolio_decisions, market_regimes,
-news_events, orders, fills, positions, trades, health_events,
-system_events, experiments. Every table has a primary key and the
-cross-references needed for full trade traceability (Blueprint Section
-32). No write path yet; this step is schema plus repository.
+Goal: a query method that walks the audit spine from a trade_id back to
+the original market event, returning every intermediate row in order:
+trade -> exit fill -> entry fill -> order -> authorization ids ->
+portfolio decision -> risk decision -> validation decision -> AI decision
+-> market event. Blueprint Section 32.
 
 Awaiting: instructor to issue the step contract.
