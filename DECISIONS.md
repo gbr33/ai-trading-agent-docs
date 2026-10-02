@@ -938,3 +938,43 @@ Journal.insert_* methods each commit by default. Inside a transaction()
 context we want one commit at the end, not one per insert. Solved by a
 _suppress_commit flag that is set during transaction() and restored
 afterward.
+
+## 2026-10-02 - E4 design decisions
+Trades and flat closes:
+
+1. One fill row per order. Partial fills are summarized on the orders
+   row. Deterministic IDs matter more than partial fill archaeology.
+
+2. Deterministic fill IDs from order id alone:
+   entry_fill_id = journal_id(order_id, "entry")
+   exit_fill_id  = journal_id(order_id, "exit")
+   trade_id      = journal_id(order_id, "trade")
+   Both writer and reader can compute these without a shared clock or
+   index.
+
+3. Trades written in the same bar transaction as the exit. Atomic.
+
+4. Fixed write order respects FKs: experiment, market_event, orders,
+   entry fills, exit fills, trades, ai, validation, risk, portfolio.
+
+5. Flat closes are trades, not system_events. E3 recorded flat runs as
+   system_events because FlatClose did not exist. E4 introduces
+   FlatClose and changes to trades.
+
+6. realized_pnl comes from ExitResult and FlatClose, not recomputed.
+
+7. entry_time comes from the plan, not from the fills table.
+
+8. No schema change. E1's trades table already had the right columns.
+
+## 2026-10-02 - Lesson: object-typed parameters erase mypy info
+Using "object" as a type for exit_results and flat_result caused 19 mypy
+errors on attribute access. Type them with the actual classes: ExitResult
+and FlattenResult. The engine already imports these elsewhere; no cycle.
+
+## 2026-10-02 - Lesson: regex replacing a def can duplicate signature
+A regex that replaces from "def _write_journal" up to "def _roll_day_if_needed"
+left a duplicate def line when the replacement string also ended with the
+next function's def. Always include the trailing def in the lookahead
+(positive lookahead (?=...)) so it is not consumed, and never include it
+in the replacement text.

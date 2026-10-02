@@ -1,12 +1,11 @@
 # NEXT STEP
 
-Stage E, Step 4 - Trades and flat closes.
+Stage E, Step 5 - Extended journal writes.
 
-Goal: write trades rows when a position exits (via exit engine or flat
-engine). Requires ExitResult to carry entry_fill_id and quantity so the
-trade can be linked to its entry. Flat engine needs to return per-symbol
-closed positions with fill info instead of just a FlattenResult summary.
-Then trace_trade can walk all the way from a closed trade back to its
-market event with no missing links.
+Goal: the ReplayEngine writes the remaining audit tables each bar:
+feature_snapshots, opportunities, market_regimes, news_events, and
+positions (end-of-bar snapshot). Turn the journal from an audit spine into
+a full replay record. After E5 a replay can be fully reconstructed from
+the journal alone.
 
 Awaiting: instructor to issue the step contract.
