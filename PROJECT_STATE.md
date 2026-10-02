@@ -1,9 +1,9 @@
 # PROJECT STATE
 
 - Current stage: D — Complete Replay
-- Last completed step: D7 — Strategy pipeline wiring
-- Next step: D8 — Position management
-- Code repo last commit: 15a9c22
+- Last completed step: D8 — Position manager
+- Next step: D9 — Exit management
+- Code repo last commit: b264cb3
 - Docs repo last commit: (updated on push)
 
 ## Stage D progress
@@ -13,14 +13,14 @@
 - D4 OK Regime classifier
 - D5 OK News engine
 - D6 OK AI provider abstraction
-- D7 OK Strategy pipeline (app/strategy/pipeline.py)
-- D8    Position management
+- D7 OK Strategy pipeline
+- D8 OK Position manager (app/execution/order_manager.py)
 - D9    Exit management
 - D10   Flattening
 - D11   Reconciliation
 
 ## Test count
-495 (A through D6) + 19 (D7) = 514 tests. CI green on every commit.
+514 (A through D7) + 29 (D8) = 543 tests. CI green on every commit.
 
 ## Known issues
 - submit_order remains public; execute_authorized is the production path.

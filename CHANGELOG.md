@@ -58,3 +58,5 @@ rejected
 - D6 complete: AI provider abstraction, heuristic provider, and fail-safe propose_safely wrapper (code commit 2e16705).
 
 - D7 complete: strategy pipeline composing features, regime, news, scanner, and AI (code commit 15a9c22).
+
+- D8 complete: position manager tracking exit parameters per symbol (code commit b264cb3).

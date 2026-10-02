@@ -686,3 +686,35 @@ Strategy pipeline:
 9. The blueprint does not list this file. It was approved by the user with
    the justification that the strategy composer is a distinct concern from
    the pure-function scanner and from the runtime orchestrator.
+
+## 2026-10-02 — D8 design decisions
+Position manager:
+
+1. Stateful tracker, not a decision maker. Registers and looks up plans.
+   Does not act. D9 owns exit logic.
+
+2. PositionPlan is separate from account Position. Account tracks quantity
+   and average price. Plan tracks stop, target, decision_id, entry_time,
+   order_id.
+
+3. Long-only. SELL entries rejected.
+
+4. Weighted average entry price, quantized to 6 dp.
+
+5. Same decision_id required for accumulation.
+
+6. Insertion order preserved.
+
+7. remove returns bool.
+
+8. FillApplication carries a reason.
+
+9. No datetime.now(). entry_time comes from the caller.
+
+10. OrderManager does not import SimulatedBroker or SimulatedAccount.
+
+## 2026-10-02 — Lesson: test cannot exercise unreachable guards
+test_register_rejects_zero_fill tried to verify the zero-quantity guard
+inside register_entry, but FillResult refuses qty=0 at construction, so
+the guard is unreachable through normal call paths. Rewrote the test to
+verify the outer contract.

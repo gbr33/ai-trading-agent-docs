@@ -1,11 +1,11 @@
 # NEXT STEP
 
-Stage D, Step 8 — Position management.
+Stage D, Step 9 — Exit management.
 
-Goal: a PositionTracker that maintains a per-symbol PositionPlan (stop,
-target, entry_time, decision_id, entry order id) for every open position.
-The tracker is informed when the broker fills an entry. It exposes lookup
-by symbol, iteration, and removal when a position closes. It does not
-trigger exits itself. Exit triggers are D9.
+Goal: an ExitEngine that inspects open positions on every bar and decides
+whether to exit. Triggers: stop hit, target hit, time exit, end-of-day
+flatten. Uses bar high/low conservatively when both stop and target fall
+inside the same bar (Blueprint Section 28). Sells through the broker using
+a synthesized execution authorization. Does not require a fresh AI call.
 
 Awaiting: instructor to issue the step contract.
