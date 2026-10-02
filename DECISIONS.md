@@ -661,3 +661,28 @@ NEXT_STEP.md after D5 grouped three concerns into D6. D6 is now AI
 provider abstraction only. Strategy wiring becomes D7. Position
 management, exit management, flattening, and reconciliation shift
 accordingly.
+
+## 2026-10-02 — D7 design decisions
+Strategy pipeline:
+
+1. Stateful only in per-symbol rolling history. Bounded by max_history_bars.
+
+2. Returns None on HOLD or SELL. SELL is exit logic; deferred to D9.
+
+3. ATR-based stop and target. Configurable multiples.
+
+4. Does not construct prompts. AIRequest is the interface; prompt building
+   is a real-LLM concern.
+
+5. News records loaded at construction; filtered per bar for point-in-time.
+
+6. Portfolio context read from EngineContext. Read-only.
+
+7. Sector from sector_map with default UNKNOWN. Consistent with risk and
+   portfolio engines.
+
+8. No journal writes. No order placement. Pure proposal generation.
+
+9. The blueprint does not list this file. It was approved by the user with
+   the justification that the strategy composer is a distinct concern from
+   the pure-function scanner and from the runtime orchestrator.

@@ -1,11 +1,11 @@
 # NEXT STEP
 
-Stage D, Step 7 — Strategy module wiring into ReplayEngine.
+Stage D, Step 8 — Position management.
 
-Goal: a Strategy module that composes feature engine -> scanner -> regime
--> news -> AI provider -> ProposalBundle, and plugs into the ReplayEngine
-strategy callback. It maintains a rolling per-symbol bar history so the
-feature and regime engines can be called. It has no side effects and does
-not touch the broker.
+Goal: a PositionTracker that maintains a per-symbol PositionPlan (stop,
+target, entry_time, decision_id, entry order id) for every open position.
+The tracker is informed when the broker fills an entry. It exposes lookup
+by symbol, iteration, and removal when a position closes. It does not
+trigger exits itself. Exit triggers are D9.
 
 Awaiting: instructor to issue the step contract.
