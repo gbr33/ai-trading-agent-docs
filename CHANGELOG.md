@@ -52,3 +52,5 @@ rejected
 
 - C4 complete: ExecutionAuthorization object and authorized broker path (code commit 3ffe76b).
 - Stage C complete: validator, risk, portfolio, and authorization. The common decision pipeline is done.
+
+- D1 complete: event-driven replay engine driving the full decision pipeline end to end (code commit 7c10273).

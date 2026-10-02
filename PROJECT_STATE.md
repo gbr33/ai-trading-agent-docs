@@ -1,9 +1,9 @@
 # PROJECT STATE
 
 - Current stage: D — Complete Replay
-- Last completed step: C4 — Execution authorization (Stage C complete)
-- Next step: D1 — Historical event loop
-- Code repo last commit: 3ffe76b
+- Last completed step: D1 — Historical event loop
+- Next step: D2 — Strategy pipeline integration (scanner, regime, news, AI)
+- Code repo last commit: 7c10273
 - Docs repo last commit: (updated on push)
 
 ## Deliverables so far
@@ -15,20 +15,24 @@ Stage B:
 - app/execution/state_machine.py, app/execution/broker.py, app/execution/simulated.py
 
 Stage C (complete):
-- app/ai/engine.py            — AI proposal schema
-- app/validation/decision.py  — deterministic decision validator
-- app/risk/engine.py          — deterministic risk engine with sizing
-- app/portfolio/controller.py — deterministic portfolio engine
-- app/execution/broker.py     — ExecutionAuthorization + build_authorization
-- app/execution/simulated.py  — execute_authorized (production path)
+- app/ai/engine.py, app/validation/decision.py, app/risk/engine.py
+- app/portfolio/controller.py
+- app/execution/broker.py (ExecutionAuthorization), app/execution/simulated.py (execute_authorized)
+
+Stage D:
+- app/backtest/engine.py — event-driven replay loop
 
 ## Test count
-309 (A + B + C1 + C2 + C3) + 24 (C4) = 333 tests. CI green on every commit.
+333 (A + B + C) + 15 (D1) = 348 tests. CI green on every commit.
 
 ## Known issues
-- submit_order is still public and does not require authorization. The
-  production path execute_authorized does require it. Closing this gap is a
-  Stage D Step 1 task when the orchestrator takes over.
+- submit_order remains public. execute_authorized is the production path.
+  Closing the gap on submit_order is deferred to a later D stage when the
+  orchestrator takes over and submit_order becomes private.
+- Scanner, regime, news, AI integration not yet wired into the engine.
+  The engine accepts a strategy callback. D2 fills it in.
+- Exit management (stops, targets, flatten) not yet implemented. D stage
+  later step.
 - Correlation-adjusted portfolio limits deferred to Stage F.
 - Session verification deferred to historical qualification gate.
 - CI dependencies unpinned. Stage F task.

@@ -1,14 +1,10 @@
 # NEXT STEP
 
-Stage D, Step 1 — Historical event loop.
+Stage D, Step 2 — Strategy pipeline integration.
 
-Goal: an event-driven replay engine that pulls MarketEvents one at a time
-from a PointInTimeEventStream, advances the SimulationClock, and drives the
-existing decision pipeline (validator -> risk -> portfolio -> authorization
--> broker) against a SimulatedBroker. No scanner, no AI, no news yet. This
-step proves the loop works end to end on a hand-built scenario.
-
-Also closes the C4 known issue: the orchestrator uses execute_authorized
-exclusively, and submit_order becomes internal in a later D step.
+Goal: build a strategy module that composes scanner -> regime -> news ->
+AI -> ProposalBundle, and plug it into the ReplayEngine callback. This
+replaces the ad-hoc test callbacks with a real strategy that the pipeline
+runs against historical data.
 
 Awaiting: instructor to issue the step contract.

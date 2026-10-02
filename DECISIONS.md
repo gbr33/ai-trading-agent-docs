@@ -447,3 +447,45 @@ The common decision pipeline is done. From here forward, sim, paper, and
 live will all use the same code: validator -> risk -> portfolio ->
 authorization -> broker. Only the broker adapter changes. Blueprint
 Sections 4 and 68 are now structural facts, not goals.
+
+## 2026-10-02 — D1 design decisions
+Historical replay engine:
+
+1. Strategy is a callback, injected. No scanner, no AI, no news. The loop
+   has one job: run the pipeline. D2 plugs in the real strategy without
+   changing the loop.
+
+2. The engine uses execute_authorized exclusively. submit_order stays
+   public for tests. Closing that is a later D step.
+
+3. Fill first, then decide. On each bar, process_bar runs before the
+   strategy callback. The strategy sees post-fill account state. Realistic
+   and deterministic.
+
+4. Per-step record is the audit unit. ReplayStep captures everything from
+   market event to order. Blueprint Section 30.
+
+5. Fail-closed at each layer. Any rejection records a reason and no order
+   is placed. Other bars proceed normally.
+
+6. Deterministic. No randomness, no datetime.now(). All time from the
+   clock. Blueprint Sections 10, 36.
+
+7. Engine does not own clock or stream. Both are injected.
+
+8. No journal, no persistence. ReplayResult is in memory. Stage E.
+
+## 2026-10-02 — Lesson: actions in class body must end with comma
+The D1 correction script replaced "bundle.proposal.action_to_side()" (a
+method that did not exist) with a helper call. The regex dropped the
+trailing comma, producing syntax errors at three call sites. Lesson:
+when replacing a term inside a call-argument list, include the comma in
+both the search and the replacement.
+
+## 2026-10-02 — Lesson: test strategy must account for pipeline state
+The D1 test_approved_proposal_places_order initially expected two
+proposals to produce two orders. But process_bar runs before the strategy
+callback, so on bar 2 the first order had already filled and the symbol
+cap was exhausted. The engine correctly rejected the second BUY. The
+test was wrong, not the engine. Lesson: tests that emit a proposal on
+every bar must reason about post-fill portfolio state, or emit only once.
