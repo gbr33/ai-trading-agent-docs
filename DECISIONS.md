@@ -1242,3 +1242,62 @@ abandon regex and remove __slots__ entirely. Lesson: when an edit
 targets a small, well-defined region and automated matching keeps
 failing, edit the region directly (via a full-file rewrite or by
 removing the construct entirely) rather than trying harder regexes.
+
+## 2026-10-04 - F3 findings: five-day replay
+Five trading days of AAPL 1-minute bars, replayed one day at a time.
+
+Finding 5 - Complete trade lifecycle works
+Three of five days produced closed trades with realized P&L:
+  09-09: entry 315.19, exit 316.91, qty 95, P&L +163.44
+  09-10: entry 325.16, exit 324.60, qty 92, P&L -51.82
+  09-14: entry 334.16, exit 335.27, qty 89, P&L +98.43
+Total: +210.05.
+
+Chain integrity: every closed trade has a decision_id linking to the
+market event that triggered the entry. trace_trade resolves the full
+path: market_event -> features -> opportunity -> ai_decision ->
+validation -> risk -> portfolio -> order -> entry fill -> plan ->
+exit fill -> trade.
+
+Finding 6 - Exit engine fires correctly on stop and target
+Entries exited within 3 to 28 minutes. Wins hit target (2R). One loss
+hit stop (1R). Quantity sizing reflects the actual stop distance and
+the 1% risk budget on ~$100k equity.
+
+Finding 7 - Multi-day replay must split per day
+The StrategyPipeline keeps per-symbol rolling history across bars. If
+a whole week is fed into one replay, the first bars of each day mix in
+the prior day's history across the overnight gap and distort features.
+Solution: split_week.py writes one CSV per session. Each session
+replays independently. This matches real trading where each day starts
+flat.
+
+Finding 8 - Engine wiring gap now closed
+ReplayEngine did not notify OrderManager when a BUY order filled.
+Without registration, the exit engine and flatten engine had no plans
+to act on. Fixed: the engine stores the ExecutionAuthorization by
+order_id when the broker accepts an order, then registers a
+PositionPlan for every BUY fill on the next bar iteration.
+Subsequent replays produce closed trades as expected.
+
+## 2026-10-04 - Known limitations exposed by F3
+Exit reason not stored. The trades table does not have an exit_reason
+column. The reason is implicit: exit_price == plan.stop means STOP_HIT,
+exit_price == plan.target means TARGET_HIT, else TIME_EXIT or FLATTEN.
+Adding the column is deferred until we need to query it in bulk.
+
+Exit price precision. Exit prices are computed from ATR as
+Decimal(str(float)) and carry full float precision
+(e.g. 316.91037981886746600). In backtest this is harmless. In live
+trading, prices would be quantized to the tick size before submission.
+F6 refinement.
+
+Zero friction. Every F2 and F3 result runs with zero spread, zero
+slippage, zero commission. The +210.05 is an upper bound, not a
+realistic expectation. F6 is where this gets stressed.
+
+## 2026-10-04 - What F3 did not tell us
+Five days is not a sample. The +210.05 could be noise. Do not draw
+conclusions from it. Do not tune thresholds against it. F4 will run 22
+days. If the same pattern appears there, it is still not proof. Proof
+is Stage F5 and beyond.

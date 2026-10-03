@@ -1,16 +1,16 @@
 # PROJECT STATE
 
 - Current stage: F - Historical Qualification
-- Last completed step: F2 - One-day qualification replay (2026-09-08)
-- Next step: F3 - One-week qualification
+- Last completed step: F3 - One-week qualification (2026-09-08 to 2026-09-14)
+- Next step: F4 - One-month qualification
 - Code repo last commit: (updated on push)
 - Docs repo last commit: (updated on push)
 
 ## Stage F progress
 - F1 OK CSV loader, IBKR downloader, first dataset
-- F2 OK One-day qualification replay (2026-09-08)
-- F3    One-week qualification (next)
-- F4    One-month qualification
+- F2 OK One-day replay (2026-09-08)
+- F3 OK One-week replay (2026-09-08 to 2026-09-14)
+- F4    One-month qualification (next)
 - F5    Multi-month / multi-year
 - F6    Cost stress testing
 - F7    Parameter sensitivity
@@ -18,40 +18,39 @@
 - F9    Walk-forward testing
 - F10   Benchmark comparison
 
-## F2 results on 2026-09-08 (AAPL)
-- 390 bars processed
-- 331 feature snapshots, 331 regimes
-- 5 opportunities (RVOL 3.04 to 7.95)
-- 5 AI decisions: 4 HOLD, 1 BUY
-- 1 validation, rejected for confidence 0.6287 < 0.70
-- 0 orders, 0 fills, 0 trades
-- Journal complete: every layer recorded
+## F3 results (AAPL, 5 trading days, 1-minute bars)
 
-## F2 findings
-1. Pipeline works end to end on real data. No crashes, no silent
-   failures, journal complete.
-2. Scanner is well-tuned. 5 opportunities per day, RVOL > 3 filter
-   doing real work on a normal AAPL day.
-3. Heuristic's required_trend=UP gate is the dominant filter. 3 of 4
-   HOLDs fired because SMA9 < SMA21, even though RSI was 55-69.
-4. Structural coupling: heuristic confidence == opportunity score, so
-   BUYs with score in [0.50, 0.70) are always rejected by the
-   validator. This wastes work and hides intent. Recorded for F5+.
+| Day | Bars | Opps | AI(BUY/HOLD) | Orders | Fills | Trades | P&L |
+|-----|------|------|--------------|--------|-------|--------|-----|
+| 09-08 | 390 | 5 | 1/4 | 0 | 0 | 0 | 0 |
+| 09-09 | 390 | 4 | 3/1 | 1 | 2 | 1 | +163.44 |
+| 09-10 | 390 | 5 | 5/0 | 1 | 2 | 1 | -51.82 |
+| 09-11 | 390 | 1 | 1/0 | 0 | 0 | 0 | 0 |
+| 09-14 | 390 | 5 | 4/1 | 1 | 2 | 1 | +98.43 |
+
+Total: +210.05 over 3 closed trades on a $100k account.
+
+Trade chain verified: each closed trade has decision_id and
+market_event_id. trace_trade resolves all links.
 
 ## Test count
-~800 tests. CI green on every commit.
+~830 tests. CI green on every commit.
 
 ## Known issues
 - submit_order remains public; execute_authorized is the production path.
 - Regime classifier does not emit RISK_ON or RISK_OFF.
 - Structural coupling between heuristic confidence and validator
-  minimum (see F2 findings).
-- The one BUY on 2026-09-08 was rejected by the validator. No trade
-  was placed. This is the correct fail-closed behavior.
-- IBKR data is unadjusted. Not an issue for a recent date.
+  minimum (F2 finding, unchanged).
+- Exit reason (STOP_HIT / TARGET_HIT / etc.) is not stored in the
+  trades table. Implicit in exit_price == plan.stop or plan.target.
+- Exit prices carry full float precision. Live trading would quantize
+  to tick size. F6 refinement.
+- Zero friction: no spread, no slippage, no commission. P&L is an
+  upper bound. F6 will stress it.
+- IBKR data is unadjusted.
 - CI dependencies unpinned.
 
 ## Open questions
-- The structural coupling needs a decision before Stage F ends.
-  Options A (accept), B (heuristic self-throttle), C (decouple
-  confidence from score). Decided with F3 data, not F2's n=1.
+- Does the +210.05 hold up under F6 cost stress? Unknown.
+- Does the one-trade-per-day pattern persist at month scale? F4.
+- Is the F2 structural coupling worth fixing before F5? Defer.
