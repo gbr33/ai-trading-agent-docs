@@ -1129,3 +1129,47 @@ Known IBKR limitations accepted for F1-F4:
   to adjust for. For older dates this would matter.
 - Requires TWS or IB Gateway running locally, logged in, API enabled.
 - Rate limited. Pagination for long ranges.
+
+## 2026-10-03 - F1 Step 2 decisions and IBKR gotchas
+IBKR historical downloader:
+
+1. Script, not package code. Lives in scripts/. Not imported by app/.
+
+2. ib_async 2.1.0. The maintained fork of ib_insync.
+
+3. Read-only API, StartupFetchNONE. The readonly flag prevents any
+   order placement. StartupFetchNONE skips the post-connect sync phase
+   that was hanging on first connection.
+
+4. Regular trading hours only (useRTH=True). No pre-market or
+   after-hours bars.
+
+5. One day, one symbol, one timeframe. Smallest possible test.
+
+6. No retry, no pagination. Fail loudly on one attempt.
+
+7. Timestamps normalized to America/New_York before constructing
+   MarketEvent.
+
+## 2026-10-03 - macOS TWS binds IPv6 only
+TWS on macOS listens on IPv6 (lsof shows IPv6 *:7497). It does not
+accept IPv4 connections on 127.0.0.1. Use --host localhost, which
+resolves to ::1 (IPv6 loopback). This is a macOS-specific behavior;
+Linux TWS binds both. Documented for future IBKR work.
+
+## 2026-10-03 - First real data validated clean
+data/raw/aapl-2026-09-08-1m.csv: 390 bars, 09:30 to 15:59 ET, prices in
+the 315-320 range. load_csv parses it. validate_dataset reports
+is_valid=True with zero issues. This is the first time real market data
+has passed through the Stage A tooling. The tools work.
+
+## 2026-10-03 - What F2 is actually for
+Every previous step tested components in isolation. F2 is the first
+integration test with real inputs. Expect at least one of:
+- The scanner returns zero opportunities all day.
+- The AI returns HOLD on every bar.
+- The pipeline produces a proposal but the risk engine rejects it.
+- A fill never happens because the next bar has no volume.
+- The journal writes something we did not expect.
+
+None of these are bugs. They are data. F2's job is to reveal them.

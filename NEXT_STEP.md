@@ -1,13 +1,16 @@
 # NEXT STEP
 
-Stage F, Step 2 - IBKR historical downloader.
+Stage F, Step 2 - One-day qualification replay.
 
-Goal: a small offline script in scripts/ that connects to Trader Workstation
-via the IBKR API, requests 1-minute regular-hours bars for AAPL on
-2026-09-08, and writes them to data/raw/aapl-2026-09-08-1m.csv using the
-existing write_csv from app/data/historical.py.
+Goal: run the ReplayEngine over the 390-bar AAPL dataset for 2026-09-08
+and inspect the output. This is the first time the full pipeline
+(features -> regime -> scanner -> news -> AI -> validation -> risk ->
+portfolio -> authorization -> broker -> fills -> exits -> flatten ->
+reconciliation -> journal) sees real market data.
 
-This is a script, not runtime code. It is not imported by the package. It
-requires TWS running and the IBKR API enabled.
+Expected first-run outcome: something does not work the way we assumed.
+That is normal. Blueprint Section 62 says: test -> inspect -> fix ->
+repeat. Section 63 says the engine is not qualified merely because it
+produces a report; it must demonstrate correctness first.
 
 Awaiting: instructor to issue the step contract.

@@ -83,3 +83,5 @@ rejected
 - Stages A through E complete. Ready for Stage F: historical qualification.
 
 - F1 Step 1 complete: CSV loader/writer with fail-closed parsing and 1-based line numbers in errors (code commit 0a3ff67).
+
+- F1 Step 2 complete: IBKR historical downloader. First real dataset downloaded: 390 AAPL 1-minute bars for 2026-09-08, validated clean by the Stage A dataset validator.
