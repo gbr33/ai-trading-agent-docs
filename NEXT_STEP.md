@@ -1,21 +1,16 @@
 # NEXT STEP
 
-Stage F, Step 4 - One-month qualification.
+Stage F, Step 5 - Multi-month / multi-year.
 
-Goal: download one month of AAPL 1-minute bars and run the replay
-per-day using the split-and-replay approach from F3. Compare against
-F3's five-day result.
+Goal: extend the F4 approach to a longer window. Options:
+A. Three months (2026-07-01 to 2026-09-30). ~65 sessions.
+B. One year (2025-10-01 to 2026-09-30). ~250 sessions.
+C. Two years. Storage-heavy on this laptop.
 
-Data volume: ~22 trading days x 390 bars = ~8600 bars. Still small.
-IBKR pacing: fine for a one-month download.
+Recommendation: three months first. If the pattern holds across
+quarters, extend to a year.
 
-Look for:
-- Total P&L over 22 days.
-- Win/loss ratio and average win vs average loss.
-- Whether the one-trade-per-day pattern holds.
-- Whether any days have zero opportunities.
-- Whether the +210/3-days from F3 is representative or lucky.
-
-Do not tune. Do not change thresholds. Collect and inspect.
+The mechanism is identical to F4: download range, split, replay per
+day, compare journals. No code changes needed.
 
 Awaiting: instructor to issue the step contract.

@@ -1,8 +1,8 @@
 # PROJECT STATE
 
 - Current stage: F - Historical Qualification
-- Last completed step: F3 - One-week qualification (2026-09-08 to 2026-09-14)
-- Next step: F4 - One-month qualification
+- Last completed step: F4 - One-month qualification (September 2026)
+- Next step: F5 - Multi-month / multi-year
 - Code repo last commit: (updated on push)
 - Docs repo last commit: (updated on push)
 
@@ -10,47 +10,50 @@
 - F1 OK CSV loader, IBKR downloader, first dataset
 - F2 OK One-day replay (2026-09-08)
 - F3 OK One-week replay (2026-09-08 to 2026-09-14)
-- F4    One-month qualification (next)
-- F5    Multi-month / multi-year
+- F4 OK One-month replay (September 2026, 21 sessions)
+- F5    Multi-month / multi-year (next)
 - F6    Cost stress testing
 - F7    Parameter sensitivity
 - F8    Out-of-sample testing
 - F9    Walk-forward testing
 - F10   Benchmark comparison
 
-## F3 results (AAPL, 5 trading days, 1-minute bars)
+## F4 results (AAPL, 21 trading days, September 2026)
 
-| Day | Bars | Opps | AI(BUY/HOLD) | Orders | Fills | Trades | P&L |
-|-----|------|------|--------------|--------|-------|--------|-----|
-| 09-08 | 390 | 5 | 1/4 | 0 | 0 | 0 | 0 |
-| 09-09 | 390 | 4 | 3/1 | 1 | 2 | 1 | +163.44 |
-| 09-10 | 390 | 5 | 5/0 | 1 | 2 | 1 | -51.82 |
-| 09-11 | 390 | 1 | 1/0 | 0 | 0 | 0 | 0 |
-| 09-14 | 390 | 5 | 4/1 | 1 | 2 | 1 | +98.43 |
+- 21 days scanned
+- 12 trades total
+- 6 wins / 6 losses (50.0% win rate)
+- Total P&L: +213.48 on $100k
+- 10 of 21 days had zero trades
+- 09-30 had zero opportunities
 
-Total: +210.05 over 3 closed trades on a $100k account.
+Determinism: the 5 F3 days reproduced exactly.
 
-Trade chain verified: each closed trade has decision_id and
-market_event_id. trace_trade resolves all links.
+F3 alone was +210.05 over 3 trade-days.
+F4 total is +213.48 over 11 trade-days.
+So the 16 days not in F3 contributed only +3.43.
+
+Interpretation: F3 was noise. The full month is flat after
+zero friction. Under realistic friction the result is likely
+negative.
 
 ## Test count
 ~830 tests. CI green on every commit.
 
 ## Known issues
-- submit_order remains public; execute_authorized is the production path.
-- Regime classifier does not emit RISK_ON or RISK_OFF.
+- Strategy as currently configured does not show meaningful edge on
+  AAPL 1-minute bars in September 2026.
 - Structural coupling between heuristic confidence and validator
-  minimum (F2 finding, unchanged).
-- Exit reason (STOP_HIT / TARGET_HIT / etc.) is not stored in the
-  trades table. Implicit in exit_price == plan.stop or plan.target.
-- Exit prices carry full float precision. Live trading would quantize
-  to tick size. F6 refinement.
-- Zero friction: no spread, no slippage, no commission. P&L is an
-  upper bound. F6 will stress it.
-- IBKR data is unadjusted.
-- CI dependencies unpinned.
+  minimum (F2 finding) drives many rejections.
+- One-trade-per-day pattern is implicit, not by design. Worth
+  understanding before F5.
+- Zero friction. F6 will stress it.
+- Exit reason not stored in trades table.
+- IBKR data unadjusted.
 
 ## Open questions
-- Does the +210.05 hold up under F6 cost stress? Unknown.
-- Does the one-trade-per-day pattern persist at month scale? F4.
-- Is the F2 structural coupling worth fixing before F5? Defer.
+- Is September 2026 representative? F5 will answer.
+- Does the one-trade-per-day cap come from risk, portfolio, or
+  validation? Worth diagnosing.
+- Should the F2 structural coupling be fixed before F5? Lean yes,
+  but not urgent.

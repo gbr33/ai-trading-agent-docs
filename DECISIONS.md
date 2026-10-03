@@ -1301,3 +1301,57 @@ Five days is not a sample. The +210.05 could be noise. Do not draw
 conclusions from it. Do not tune thresholds against it. F4 will run 22
 days. If the same pattern appears there, it is still not proof. Proof
 is Stage F5 and beyond.
+
+## 2026-10-04 - F4 findings: one-month replay
+September 2026, AAPL, 1-minute bars, per-day replay.
+
+Statistical shape:
+- 21 trading days scanned
+- 12 trades placed
+- 6 wins / 6 losses (50.0%)
+- Total P&L: +213.48 on $100k (0.21% monthly)
+- 10 of 21 days with zero trades
+- 09-30 had zero opportunities (scanner never fired)
+
+Determinism check:
+The five F3 days (09-08, 09-09, 09-10, 09-11, 09-14) reproduced
+exactly. Same P&L, same trade_ids, same decisions. The system is
+deterministic across separate runs on the same data. This is
+Blueprint Section 36 satisfied.
+
+Finding 9 - F3 was a fluke
+The F3 five-day result of +210.05 did not generalize. The sixteen
+days not seen before F4 contributed +3.43 in total. Of the F4 month
+total of +213.48, 210.05 came from the three F3 trade days. The
+sample of three trades was not predictive.
+
+Finding 10 - Win rate is a coin flip
+6 wins / 6 losses. The positive P&L comes entirely from the 2:1
+reward-to-risk ratio (target at 2 x ATR, stop at 1.5 x ATR). Under
+zero friction this is barely positive. Under realistic friction this
+is likely negative.
+
+Finding 11 - One-trade-per-day pattern is implicit
+Every day with trades had exactly one trade. No day had two or three.
+This is not a designed rule. The most likely cause is the
+combination of: risk engine rejects a second position when the
+max_open_positions cap is reached, portfolio engine rejects stacked
+entries, or the second BUY on the same symbol fails validation on
+confidence. Worth diagnosing before F5 because it materially shapes
+the return distribution.
+
+Finding 12 - Validator is the dominant filter
+Every day with BUY proposals shows a large vRej count (4 to 5
+rejections). Almost every BUY the heuristic emits is rejected on
+confidence. Combined with the F2 structural coupling, the pipeline
+produces one live trade per day at most, and often none.
+
+## 2026-10-04 - What F4 does not tell us
+One month is not a sample either. The strategy might work in other
+months, other regimes, other symbols. F4 establishes a baseline:
+this configuration on this symbol in this month is flat after zero
+friction. F5 will extend the window. F6 will stress the costs. F7
+will explore parameter sensitivity. F8 will test out-of-sample.
+
+Do not tune. Do not draw conclusions yet. F4 is a data point, not a
+verdict.
