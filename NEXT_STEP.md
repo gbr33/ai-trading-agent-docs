@@ -1,16 +1,15 @@
 # NEXT STEP
 
-Stage F, Step 2 - One-day qualification replay.
+Stage F, Step 3 - One-week qualification.
 
-Goal: run the ReplayEngine over the 390-bar AAPL dataset for 2026-09-08
-and inspect the output. This is the first time the full pipeline
-(features -> regime -> scanner -> news -> AI -> validation -> risk ->
-portfolio -> authorization -> broker -> fills -> exits -> flatten ->
-reconciliation -> journal) sees real market data.
+Goal: download one week of AAPL 1-minute bars (five trading days) and
+run the same replay. Compare against the one-day F2 result. Look for:
+- Does the trade count scale with days, or is it flatter/noisier?
+- Does the regime classifier show a stable mix of states across days?
+- Does the trend:DOWN gate consistently block BUYs, or was 09-08 unusual?
+- Does any BUY clear the validator's 0.70 confidence threshold?
 
-Expected first-run outcome: something does not work the way we assumed.
-That is normal. Blueprint Section 62 says: test -> inspect -> fix ->
-repeat. Section 63 says the engine is not qualified merely because it
-produces a report; it must demonstrate correctness first.
+One week is still small. This is not a qualification step. It is a data
+collection step. Do not tune anything yet.
 
 Awaiting: instructor to issue the step contract.

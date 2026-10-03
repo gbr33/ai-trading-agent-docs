@@ -85,3 +85,4 @@ rejected
 - F1 Step 1 complete: CSV loader/writer with fail-closed parsing and 1-based line numbers in errors (code commit 0a3ff67).
 
 - F1 Step 2 complete: IBKR historical downloader. First real dataset downloaded: 390 AAPL 1-minute bars for 2026-09-08, validated clean by the Stage A dataset validator.
+\n- F2 complete: first one-day replay on real data. 390 bars, 5 opportunities, 4 HOLD / 1 BUY, 0 orders. Journal complete. Audit gap for HOLD decisions fixed. (code commits 0c5bc70, plus replay script)\n

@@ -1173,3 +1173,72 @@ integration test with real inputs. Expect at least one of:
 - The journal writes something we did not expect.
 
 None of these are bugs. They are data. F2's job is to reveal them.
+
+## 2026-10-04 - F2 design findings
+First one-day replay on real market data (AAPL 2026-09-08):
+
+Finding 1 - Pipeline integrity
+The full pipeline ran end to end on 390 real bars with no crashes,
+no silent failures, and a complete journal. Every layer recorded what
+it did. trace_trade-style queries resolve even for non-filled
+proposals. The system is structurally sound.
+
+Finding 2 - Scanner behavior
+5 opportunities out of 331 bars (1.5%). RVOL at opportunity time was
+3.04 to 7.95. RSI at opportunity time was 52 to 69. The RVOL > 3
+filter is doing real work; on a normal AAPL day it fires on a handful
+of minutes, not on all of them.
+
+Finding 3 - Trend gate dominance
+3 of 4 HOLD decisions fired because sma_fast < sma_slow (trend DOWN).
+RSI at those moments was 55 to 69, i.e. momentum-positive. The
+heuristic requires trend UP; the SMA relationship disagreed. This is
+not a bug. It is a design characteristic of the HeuristicProvider on
+this day. Whether it generalizes is an F3 question.
+
+Finding 4 - Structural coupling (recorded, not fixed)
+The heuristic sets confidence = clamp(opportunity_score, 0, 1). The
+validator requires confidence >= min_confidence (default 0.70). The
+heuristic emits BUY when opportunity_score >= min_opportunity_score
+(default 0.50). Therefore any BUY with score in [0.50, 0.70) is
+structurally doomed: proposed, then rejected. On 2026-09-08, the one
+BUY had confidence 0.6287, right in the dead zone.
+
+This coupling is a design flaw. It is not a bug in the sense that the
+system behaves as coded. But it wastes AI calls, logs rejections that
+could not have succeeded, and hides the intent of the heuristic.
+
+Three options for later:
+A. Accept it. Document that BUYs below 0.70 are always rejected.
+B. Heuristic self-throttle: refuse to emit BUY when its own
+   confidence would be below the validator threshold. Requires
+   matching config values.
+C. Decouple: heuristic derives confidence from AI-relevant signals
+   (regime quality, feature strength, trend strength) rather than
+   reusing opportunity_score.
+
+Do not decide on n=1. Collect F3 data first.
+
+## 2026-10-04 - Audit gap fix
+E3 wrote ai_decisions only when a ProposalBundle existed. When the
+pipeline returned None because the heuristic returned HOLD, the AI
+decision was invisible. This hid 4 of 5 AI calls on 2026-09-08.
+
+Fix: BarDiagnostics gained ai_response; the pipeline writes the AI
+response into diagnostics; the engine writes ai_decisions from
+diagnostics when present, even when no step exists. The engine also
+writes ai_decisions from step when diagnostics is absent for
+backward compatibility.
+
+After the fix, Run 2 shows 5 ai_decisions (4 HOLD, 1 BUY) matching
+the 5 opportunities. Blueprint Section 32 (nothing important is a
+black box) is restored.
+
+## 2026-10-04 - Process note: regex on already-formatted code
+Two consecutive attempts to modify BarDiagnostics failed because ruff
+had reformatted __slots__ into a multiline tuple and then into a
+single line, and my regexes assumed a specific shape. The fix was to
+abandon regex and remove __slots__ entirely. Lesson: when an edit
+targets a small, well-defined region and automated matching keeps
+failing, edit the region directly (via a full-file rewrite or by
+removing the construct entirely) rather than trying harder regexes.
