@@ -1089,3 +1089,43 @@ Stage E (Audit):
 Nothing in stages F-H has been built or run. The system has never seen
 real historical data. It has never connected to a broker. The AI layer
 has never called a real model. That is Stage F and beyond.
+
+## 2026-10-03 - F1 Step 1 design decisions
+CSV loader and writer:
+
+1. ISO 8601 with explicit offset. Matches MarketEvent requirement.
+
+2. Pipe-separated quality flags (comma is the CSV delimiter).
+
+3. Required columns are the ones with no sensible default.
+
+4. No sorting, no deduplication. HistoricalDataProvider and the dataset
+   validator handle those.
+
+5. Row number in every error. Non-negotiable for debugging.
+
+6. write_csv exists for symmetry. One format definition.
+
+7. Stdlib csv only. No pandas. No new dependency.
+
+8. No IBKR import. Step 1 is offline and testable.
+
+9. Default source is HISTORICAL.
+
+10. Empty list on header-only file. Legitimate case.
+
+## 2026-10-03 - Stage F decisions locked
+- Vendor: IBKR. Trader Workstation with the API enabled. The IBKR API
+  returns 1-minute bars through the API, capped per request and paced at
+  roughly 60 requests per 10 minutes. Fine for one day, workable for a
+  week. For multi-year we will need a vendor migration. Re-evaluate at F5.
+- Universe: AAPL only.
+- Timeframe: 1-minute.
+- First date: 2026-09-08. Verified XNYS session.
+- Session: regular trading hours only (useRTH=True).
+
+Known IBKR limitations accepted for F1-F4:
+- No adjusted prices. For recent dates there are no splits or dividends
+  to adjust for. For older dates this would matter.
+- Requires TWS or IB Gateway running locally, logged in, API enabled.
+- Rate limited. Pagination for long ranges.

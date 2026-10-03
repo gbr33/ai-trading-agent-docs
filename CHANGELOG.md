@@ -81,3 +81,5 @@ rejected
 - E6 complete: ExperimentManifest and journal persistence (code commit c3a4f4f).
 - Stage E complete: full audit journal with deterministic IDs, trace_trade, per-bar writes, and manifest persistence.
 - Stages A through E complete. Ready for Stage F: historical qualification.
+
+- F1 Step 1 complete: CSV loader/writer with fail-closed parsing and 1-based line numbers in errors (code commit 0a3ff67).
