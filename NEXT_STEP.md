@@ -1,11 +1,10 @@
 # NEXT STEP
 
-Stage E, Step 5 - Extended journal writes.
+Stage E, Step 6 - Experiment manifest persistence.
 
-Goal: the ReplayEngine writes the remaining audit tables each bar:
-feature_snapshots, opportunities, market_regimes, news_events, and
-positions (end-of-bar snapshot). Turn the journal from an audit spine into
-a full replay record. After E5 a replay can be fully reconstructed from
-the journal alone.
+Goal: a frozen ExperimentManifest model (Blueprint Section 35) capturing
+every knob of a run, and a writer that persists it as the experiments row's
+config_json. The engine accepts a manifest instead of a bare experiment_id.
+After E6, an experiment can be reproduced from the journal alone.
 
 Awaiting: instructor to issue the step contract.

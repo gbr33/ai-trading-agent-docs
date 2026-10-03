@@ -978,3 +978,39 @@ left a duplicate def line when the replacement string also ended with the
 next function's def. Always include the trailing def in the lookahead
 (positive lookahead (?=...)) so it is not consumed, and never include it
 in the replacement text.
+
+## 2026-10-03 - E5 design decisions
+Extended journal writes:
+
+1. Per-bar diagnostics channel. EngineContext carries a mutable
+   BarDiagnostics object. The pipeline writes what it computed. The
+   engine reads after the callback returns. The strategy_fn signature is
+   unchanged.
+
+2. BarDiagnostics is a plain class, not Pydantic. Per-bar scratch space.
+   No validator overhead.
+
+3. EngineContext stays frozen; the reference is fixed, the contents are
+   not. Documented.
+
+4. Journal writes are opportunistic. If a diagnostic is None, no row.
+
+5. News rows are per record, not per snapshot. One row per news item.
+
+6. Deterministic IDs for every new row:
+   snapshot_id    = journal_id(event_id, "features")
+   regime_id      = journal_id(event_id, "regime")
+   opportunity_id = journal_id(event_id, "opp")
+   news_id        = journal_id(event_id, "news", record.news_id)
+
+7. No positions, health_events, system_events in E5. E6.
+
+## 2026-10-03 - Lesson: monkey-patching methods breaks mypy
+Attaching methods to a class after definition works at runtime but mypy
+cannot see them. Rewrite as normal class-body methods. If a script must
+modify many methods, rewrite the whole file rather than patch it.
+
+## 2026-10-03 - Lesson: single-letter variable names collide
+Using "o" for both an Opportunity and an order caused 8 mypy errors in one
+function. Use full names (opp, ordr, ev, rec) inside any function that
+touches more than one domain object.

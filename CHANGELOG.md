@@ -75,3 +75,5 @@ rejected
 - E3 complete: ReplayEngine writes a per-bar audit chain to the journal inside a single transaction (code commit 934d7f5).
 
 - E4 complete: ReplayEngine writes trades and flat closes to the audit chain (code commit 6f81abf). ExitResult and FlatClose now carry the fields needed to link an exit back to its entry order.
+
+- E5 complete: ReplayEngine writes feature snapshots, market regimes, news events, and opportunities per bar. Diagnostics channel added to EngineContext. (code commit c4e7045).
