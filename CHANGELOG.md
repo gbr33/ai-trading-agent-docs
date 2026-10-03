@@ -77,3 +77,7 @@ rejected
 - E4 complete: ReplayEngine writes trades and flat closes to the audit chain (code commit 6f81abf). ExitResult and FlatClose now carry the fields needed to link an exit back to its entry order.
 
 - E5 complete: ReplayEngine writes feature snapshots, market regimes, news events, and opportunities per bar. Diagnostics channel added to EngineContext. (code commit c4e7045).
+
+- E6 complete: ExperimentManifest and journal persistence (code commit c3a4f4f).
+- Stage E complete: full audit journal with deterministic IDs, trace_trade, per-bar writes, and manifest persistence.
+- Stages A through E complete. Ready for Stage F: historical qualification.

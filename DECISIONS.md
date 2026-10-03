@@ -1014,3 +1014,78 @@ modify many methods, rewrite the whole file rather than patch it.
 Using "o" for both an Opportunity and an order caused 8 mypy errors in one
 function. Use full names (opp, ordr, ev, rec) inside any function that
 touches more than one domain object.
+
+## 2026-10-03 - E6 design decisions
+Experiment manifest:
+
+1. Manifest is a frozen, extra-forbid value object. Same pattern as
+   every other Pydantic model in the project.
+
+2. All version fields are caller-supplied strings. No auto-detection
+   from git.
+
+3. JSON storage with sort_keys=True. Same manifest -> same config_json.
+
+4. Manifest's experiment_id overrides the constructor's experiment_id.
+
+5. Compat path: if only experiment_id is given, a minimal manifest is
+   synthesized with 0.0.0 versions. Existing tests pass unchanged.
+
+6. Write-once. Second insert with same experiment_id raises
+   IntegrityError. Callers use new IDs to re-run.
+
+7. get_manifest is a convenience wrapper over get_experiment + from_json.
+
+8. Dates as ISO strings, not date objects. Keeps DDL simple.
+
+9. random_seed is required. Determinism is explicit.
+
+10. Field validators reject empty strings on ID and version fields.
+    model_post_init enforces start_date <= end_date, non-empty universe,
+    timezone-aware created_at.
+
+## 2026-10-03 - Stage E complete - full project review
+Stages A through E are complete. What exists:
+
+Stage A (Simulation foundation):
+  - Canonical MarketEvent
+  - SimulationClock with session derivation
+  - HistoricalDataProvider and PointInTimeEventStream
+  - Dataset validator (fail-closed)
+
+Stage B (Simulated broker):
+  - SimulatedAccount with Decimal money
+  - SimulatedOrder state machine
+  - Abstract Broker + SimulatedBroker
+  - Fill engine (BUY + SELL, spread, slippage, commission, partial fills)
+
+Stage C (Decision pipeline):
+  - AIProposal schema
+  - Deterministic validator
+  - Risk engine with sizing and exposure caps
+  - Portfolio engine with combined and pending exposure
+  - ExecutionAuthorization and execute_authorized
+
+Stage D (Complete replay):
+  - Feature engine
+  - Opportunity scanner
+  - Regime classifier
+  - News engine
+  - AI provider abstraction and HeuristicProvider
+  - Strategy pipeline
+  - Position manager
+  - Exit engine
+  - Flatten engine
+  - Reconciliation engine
+  - ReplayEngine event loop
+
+Stage E (Audit):
+  - SQLite journal with 16 tables
+  - 13 typed insert/get pairs
+  - trace_trade walking the audit chain
+  - Per-bar engine writes in a single transaction
+  - ExperimentManifest persistence
+
+Nothing in stages F-H has been built or run. The system has never seen
+real historical data. It has never connected to a broker. The AI layer
+has never called a real model. That is Stage F and beyond.

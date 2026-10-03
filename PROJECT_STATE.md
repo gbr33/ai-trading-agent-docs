@@ -1,31 +1,47 @@
 # PROJECT STATE
 
-- Current stage: E - Audit and Journal
-- Last completed step: E5 - Extended journal writes
-- Next step: E6 - Experiment manifest persistence
-- Code repo last commit: c4e7045
+- Current stage: F - Historical Qualification
+- Last completed step: E6 - Experiment manifest (Stage E complete)
+- Next step: F1 - Historical data preparation
+- Code repo last commit: c3a4f4f
 - Docs repo last commit: (updated on push)
 
-## Stage E progress
-- E1 OK SQLite journal schema
-- E2 OK Trace query
-- E3 OK ReplayEngine journal wiring
-- E4 OK Trades and flat closes
-- E5 OK Extended journal writes (features, regimes, news, opportunities)
-- E6    Experiment manifest persistence
+## Stages complete
+- A OK Simulation foundation
+- B OK Simulated broker
+- C OK Common decision pipeline
+- D OK Complete replay
+- E OK Audit and journal
+
+## Stage F progress
+- F1    Historical data preparation
+- F2    One-day qualification
+- F3    One-week qualification
+- F4    One-month qualification
+- F5    Multi-month / multi-year
+- F6    Cost stress testing
+- F7    Parameter sensitivity
+- F8    Out-of-sample testing
+- F9    Walk-forward testing
+- F10   Benchmark comparison
 
 ## Test count
-707 (A through E4) + 7 (E5) = 714 tests. CI green on every commit.
+~750 tests across the codebase. CI green on every commit.
 
 ## Known issues
 - submit_order remains public; execute_authorized is the production path.
 - Regime classifier does not emit RISK_ON or RISK_OFF.
-- Journal tables positions, health_events, system_events remain DDL-only.
-- experiments row is written on first bar when experiment_id is supplied
-  but only records dataset_id, not a full manifest. E6.
-- Correlation-adjusted portfolio limits deferred to Stage F.
-- Session verification deferred to historical qualification gate.
-- CI dependencies unpinned. Stage F task.
+- AI provider is only the heuristic or a fixed provider. No real LLM.
+- Session verification deferred to F1.
+- CI dependencies unpinned. F task.
+- Correlation-adjusted portfolio limits deferred to F7/F8.
 
 ## Open questions
-- None.
+- Where does historical data come from? (Vendor, format, cost.)
+- What universe? How many symbols?
+- What timeframe? 1-minute is the assumed default.
+- What date range for the first qualification?
+
+## The next conversation
+The user must decide on data source, universe, timeframe, and date range
+before F1 can start. See NEXT_STEP.md.
