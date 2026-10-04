@@ -1543,3 +1543,65 @@ Conditions under which this is legitimate:
 
 If Q2 fails: ORB line ends. No further ORB work in this project.
 If Q2 passes: proceed to Q1 as the real OOS.
+
+## 2026-10-04 - ORB v1 falsified out of sample
+Q2 2026, v1 rules unchanged, exploratory run.
+
+| friction  | trades | W  | L  | win% | P&L       |
+|-----------|--------|----|----|------|-----------|
+| zero      | 35     | 19 | 16 | 54.3 | +323.45   |
+| normal    | 35     | 17 | 18 | 48.6 | -303.79   |
+| moderate  | 35     | 15 | 20 | 42.9 | -1244.64  |
+| high      | 35     | 12 | 23 | 34.3 | -2812.74  |
+
+Q3, same rules: +2851.30 at normal friction.
+Q2, same rules: -303.79 at normal friction.
+
+The sign flipped. v1 does not reproduce out of sample.
+
+Finding 22 - The Q3 result was not robust
+Q3 zero friction was +3425.44. Q2 zero friction was +323.45. The
+10x difference is not a small sample effect on 32 vs 35 trades.
+It is the difference between a quarter that had a few large
+directional wins and a quarter that did not.
+
+Finding 23 - v1 and v2 were never fundamentally different
+Q2 results for the two strategies:
+  v1 normal: -303.79, trades 35, win rate 48.6%
+  v2 normal: -623.09, trades 35, win rate 48.6%
+Same trades. Same win rate. The only difference is exit price on a
+handful of winners. The "target vs no-target" distinction was not
+a real strategic difference.
+
+Finding 24 - Simple 1-minute strategies on AAPL do not survive
+Two strategy families, three attempts, no survivor after normal
+friction. The heuristic momentum screen: -22.08. ORB v1: -303.79
+out of sample. ORB v2: -623.09 in sample. Every one fails the
+same way: the zero-friction result is small or concentrated, and
+friction eats it.
+
+## 2026-10-04 - ORB line closed
+Per the conditions recorded before the Q2 exploratory run:
+"If Q2 fails: ORB line ends. No further ORB work in this project."
+
+Q2 failed. The ORB line ends.
+
+The F stage has now measured two full strategy families against
+real market data with a realistic friction model. Both failed.
+This is not a failure of the F stage. It is exactly what the F
+stage exists to detect. Blueprint Section 42 is unambiguous.
+
+## 2026-10-04 - What the platform is worth
+Even with no surviving strategy, the F-stage produced:
+- A deterministic backtester verified across 126 sessions (Q2+Q3)
+  at 4 friction levels.
+- A pre-registration discipline that caught one design flaw
+  (v2) before it became a tuning spiral.
+- A correct friction model applied to both entries and exits.
+- A correct cost stress harness.
+- A complete audit journal with per-trade traceability.
+- A documented, reproducible finding: two simple 1-minute
+  strategies on AAPL do not survive realistic costs.
+
+That is a working research platform. The platform is the asset.
+Strategies are experiments that run on top of it.
