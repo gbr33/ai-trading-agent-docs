@@ -1,56 +1,33 @@
 # PROJECT STATE
 
-- Current stage: F - Historical Qualification
-- Last completed step: F6 - Cost stress and dispersion analysis
-- Next step: F7 - Parameter sensitivity (decision pending)
-- Code repo last commit: (updated on push)
+- Current stage: F complete; moving to a new hypothesis (Option 2)
+- Code repo last commit: e5f71a2
 - Docs repo last commit: (updated on push)
 
-## Stage F progress
-- F1 OK CSV loader, IBKR downloader
-- F2 OK One-day replay
-- F3 OK One-week replay
-- F4 OK One-month replay
-- F5 OK Multi-month (Q3 2026)
-- F6 OK Cost stress and dispersion analysis
-- F7    Parameter sensitivity (decision pending)
-- F8    Out-of-sample
-- F9    Walk-forward
-- F10   Benchmark comparison
+## Stages complete
+- A — Simulation foundation
+- B — Simulated broker
+- C — Common decision pipeline
+- D — Complete replay
+- E — Audit and journal
+- F — Historical qualification (both strategy families falsified)
 
-## F6 results (Q3 2026, 64 sessions)
+## Stage F outcomes
+- Heuristic momentum screen: falsified (normal friction -22.08 on Q3)
+- ORB v1: falsified out of sample (Q2 normal friction -303.79)
+- ORB v2: falsified in sample (Q2 normal friction -623.09)
 
-Dispersion analysis:
-- 23 trades total, +390.65 zero friction
-- After removing top 3 trades: +51.38
-- After removing top 5 trades: -95.48
-- Realized win/loss ratio: 1.76 (not 2.0)
-
-Cost stress:
-| friction  | trades | W  | L  | win% | total P&L |
-|-----------|--------|----|----|------|-----------|
-| zero      | 23     | 12 | 11 | 52.2 | +390.65   |
-| normal    | 23     | 12 | 11 | 52.2 | -22.08    |
-| moderate  | 23     | 8  | 15 | 34.8 | -639.94   |
-| high      | 18     | 2  | 16 | 11.1 | -1359.22  |
-
-Determinism: zero row reproduces F5 exactly.
+## Next
+Option 2. New hypothesis. Overnight gap fade proposed. Pre-
+registration pending. See NEXT_STEP.md.
 
 ## Test count
-~870 tests. CI green on every commit.
+~880 tests. CI green on every commit.
 
 ## Known issues
-- The strategy as configured does not survive realistic transaction
-  costs. Blueprint Section 42 says do not advance.
-- Return is concentrated. Removing top 3 trades reduces P&L from
-  +390.65 to +51.38.
-- Exit friction was previously missing; now corrected.
-- Fill-price guards now prevent mis-anchored entries (Fix A).
-- Structural coupling between heuristic confidence and validator
-  minimum remains live.
-- Exit reason not stored in trades table.
-
-## Open questions
-- Is there a robust region in the parameter space? F7.
-- If F7 shows nothing, does the strategy need fundamental redesign?
-- Or does the whole project continue on a different symbol/timeframe?
+- No surviving strategy after realistic friction.
+- Structural coupling: heuristic confidence == opportunity score,
+  validator needs 0.70. Documented, not fixed. Moot if heuristic
+  path is unused.
+- IBKR data unadjusted.
+- CI dependencies unpinned.

@@ -1,20 +1,16 @@
 # NEXT STEP
 
-Stage F, Step 7 - Parameter sensitivity.
+Draft a pre-registration hypothesis document for a new strategy
+family. Recommended: overnight gap fade on AAPL.
 
-Goal: test whether the strategy's behavior is robust across a range
-of parameter values, or whether the zero-friction P&L lives at a
-single lucky point. Under realistic costs the question changes: is
-there any region where the strategy is profitable?
+Different mechanism than ORB. Counter-trend. One trade per day.
+Gaps partially revert. Large expected move relative to friction.
 
-Options:
-A. Small sweep near current defaults. RVOL threshold, RSI band,
-   stop multiple, target multiple, confidence minimum.
-B. Wide sweep to find any positive region.
-C. Do not run F7. Accept the F6 result. Move to strategy redesign.
+Do not implement until the hypothesis is approved by the user.
+Do not reuse ORB windows or rules. Do not tune existing parameters.
 
-The honest read of F6 is that option C may be the right answer.
-Section 42 is unambiguous. Running F7 risks discovering an
-overfitted region that survives only in-sample.
-
-Awaiting: user decision on A, B, or C.
+Before drafting, the new chat should:
+1. Read HANDOFF.md fully.
+2. Read DECISIONS.md (last 500 lines) for discipline examples.
+3. Read both ORB hypothesis documents as templates.
+4. Confirm scope with the user.
