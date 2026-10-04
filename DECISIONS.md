@@ -1470,3 +1470,42 @@ work is redesign, not tuning.
 
 Running F7 on a strategy that F6 has already disqualified risks
 discovering an overfitted region. The user decides.
+
+## 2026-10-04 - F7 decision: skip parameter sensitivity, move to redesign
+User chose option C. F7 will not run.
+
+Rationale: F6 (Blueprint Section 42) disqualified the current
+configuration. Running F7 on a disqualified strategy risks finding
+an overfitted region that survives only in-sample. Blueprint
+Section 54 defines "learning" as a controlled research process, not
+automatic parameter search. The next work is strategy-level.
+
+Deferred decision: which new hypothesis to test. Three options on
+the table:
+1. Stop here. Keep the system as a completed research platform.
+2. Pick one new trading hypothesis (opening range breakout, gap
+   fade, higher-timeframe trend continuation) and test it with a
+   pre-registered rule set.
+3. Move to Stage G/H on the current configuration as an
+   infrastructure qualification exercise, with no expectation of
+   profit.
+
+Recommendation recorded: option 2, opening range breakout on AAPL.
+One event per day, bounded, testable. Requires a written hypothesis
+document before any code or any backtest, so the result is not
+tuned after the fact.
+
+## 2026-10-04 - What F-stage produced
+Even without a profitable strategy, the F-stage produced real,
+reusable results:
+- A working deterministic backtester, verified across 64 sessions
+  and 4 friction levels.
+- A complete audit journal with per-trade traceability.
+- A correct cost stress harness.
+- A correct friction model (entry and exit).
+- A documented finding that the placeholder momentum screen on
+  AAPL 1-minute bars has no edge after realistic costs.
+
+This is the same result a serious quant research group expects from
+a first-pass strategy test. Most first hypotheses fail. The value
+is that the failure is measured, understood, and reproducible.
