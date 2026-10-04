@@ -1389,3 +1389,84 @@ slippage on exits.
 Still zero friction. Still one symbol. Still no out-of-sample test.
 The +390.65 is an upper bound. F6 will stress it. F7 will check
 parameter sensitivity. F8 will check unseen data.
+
+## 2026-10-04 - F6 findings: cost stress kills the strategy
+Dispersion and cost stress, Q3 2026.
+
+Dispersion:
+23 trades, +390.65 zero friction. Removing top 3 trades: +51.38.
+Removing top 5: -95.48. Realized win/loss ratio 1.76, not the 2.0
+implied by the stop and target design. The "edge" is a narrow
+positive skew, not a broad advantage.
+
+Cost stress (Fix A and Fix B applied):
+| friction  | trades | W  | L  | win% | P&L       |
+|-----------|--------|----|----|------|-----------|
+| zero      | 23     | 12 | 11 | 52.2 | +390.65   |
+| normal    | 23     | 12 | 11 | 52.2 | -22.08    |
+| moderate  | 23     | 8  | 15 | 34.8 | -639.94   |
+| high      | 18     | 2  | 16 | 11.1 | -1359.22  |
+
+Finding 17 - Strategy does not survive normal friction
+Normal friction (2 bps spread, 2 bps slippage, $0.005/share each
+way) turns the quarter negative: -22.08. This is the friction a
+retail AAPL trader actually pays on a liquid session. The strategy
+does not have an edge after realistic costs.
+
+Finding 18 - Win rate decays with friction
+52.2% at zero and normal, then 34.8% at moderate, then 11.1% at
+high. Friction does not subtract a fixed dollar amount per trade;
+it pushes marginal winners into losses. The strategy's wins are
+thin, and there are many of them at the margin.
+
+Finding 19 - F3 and F5 were about luck, not edge
+F3 was five days, +210.05, called "noise" in F4.
+F5 was 64 days, +390.65, mostly three lucky trades.
+F6 is 64 days, -22.08 after normal friction.
+Same system, same data, same configuration. The difference is
+costs. Without costs, the model looks like it has a slight edge.
+With costs, it is flat to negative.
+
+Finding 20 - Fix A prevented crashes correctly
+The high-friction run in F6 Step 2 crashed on 5 days because fill
+prices had gapped past the plan's target or stop. Fix A now squares
+off such entries immediately at fill price, recording the friction
+paid and keeping the book flat. After Fix A, all 64 days complete
+at all four friction levels.
+
+Finding 21 - Fix B exposed the true cost
+Exit friction was not modeled before Fix B. Fix B applies the same
+half-spread and slippage to exits as to entries. The prior F6
+Step 2 results (normal +184.64) were optimistic by roughly 2x.
+After Fix B: -22.08 at normal.
+
+## 2026-10-04 - What this means for the project
+Blueprint Section 42: "If profitability disappears under modest
+realistic transaction costs, the strategy should not advance."
+
+The strategy should not advance. This is a valid F-stage result.
+It is what F-stage qualification exists to find.
+
+What this does NOT mean:
+- The architecture is wrong.
+- The system is broken.
+- All intraday trading fails.
+- The project should be abandoned.
+
+What it does mean:
+- The specific configuration (defaults, heuristic provider, current
+  stop/target multiples, one symbol, one timeframe, one quarter)
+  does not have an edge after realistic costs.
+- Tuning this configuration until it looks profitable in-sample
+  would be overfitting, not progress.
+- The next decision is strategy-level, not parameter-level.
+
+## 2026-10-04 - F7 is not mandatory
+Blueprint Section 43 says to test parameter sensitivity. It does
+not say to tune. F7's purpose is to determine whether robust
+performance exists near the current defaults. If it does not, the
+honest conclusion is that the strategy does not work, and the next
+work is redesign, not tuning.
+
+Running F7 on a strategy that F6 has already disqualified risks
+discovering an overfitted region. The user decides.

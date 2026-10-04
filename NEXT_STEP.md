@@ -1,15 +1,20 @@
 # NEXT STEP
 
-Stage F, Step 6 - Cost stress and dispersion analysis.
+Stage F, Step 7 - Parameter sensitivity.
 
-Two parts:
+Goal: test whether the strategy's behavior is robust across a range
+of parameter values, or whether the zero-friction P&L lives at a
+single lucky point. Under realistic costs the question changes: is
+there any region where the strategy is profitable?
 
-1. Trade dispersion. Read the 64 Q3 journals and analyze the
-   distribution of individual trade P&L. Are returns concentrated in
-   a few trades or spread across many? Removing the top 3 trades:
-   does the sign flip?
+Options:
+A. Small sweep near current defaults. RVOL threshold, RSI band,
+   stop multiple, target multiple, confidence minimum.
+B. Wide sweep to find any positive region.
+C. Do not run F7. Accept the F6 result. Move to strategy redesign.
 
-2. Cost stress. Re-run Q3 under four friction models (normal,
-   moderate, high, extreme) and compare P&L at each level.
+The honest read of F6 is that option C may be the right answer.
+Section 42 is unambiguous. Running F7 risks discovering an
+overfitted region that survives only in-sample.
 
-Awaiting: instructor to issue the step contract.
+Awaiting: user decision on A, B, or C.
