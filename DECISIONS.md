@@ -1509,3 +1509,37 @@ reusable results:
 This is the same result a serious quant research group expects from
 a first-pass strategy test. Most first hypotheses fail. The value
 is that the failure is measured, understood, and reproducible.
+
+## 2026-10-04 - Departure from v1 and v2 pre-registration discipline
+Recorded explicitly.
+
+v1 pre-registration Section 8 said: "If in-sample fails any, stop."
+v1 in-sample (Q3) failed criterion 3 (R/R 1.49 vs 1.50 bar).
+We did not stop. We wrote v2.
+
+v2 pre-registration Section 8 said the same thing.
+v2 in-sample (Q2) failed criterion 2 (normal friction -623.09).
+We are not stopping. We are returning to v1 and running it on Q2
+as an exploratory test.
+
+This is a departure from strict pre-registration discipline. It
+costs statistical rigor. It is recorded here so future readers
+know the v1-on-Q2 result is exploratory, not a pre-registered
+out-of-sample confirmation.
+
+Rationale for proceeding anyway:
+- v1 is the strongest result the project has produced (Q3 in-sample
+  +2851.30 at normal friction).
+- v1 has never been run on Q2. The data has not been used to tune
+  v1's rules.
+- v2's failure did not lead to any change in v1's rules.
+- Running v1 on Q2 is one command. The information value is high.
+
+Conditions under which this is legitimate:
+1. Q2 v1 result is labeled exploratory, not pre-registered OOS.
+2. If Q2 passes, we download Q1 2026 as fresh OOS and test v1
+   there. Q1 has never been downloaded.
+3. This record exists.
+
+If Q2 fails: ORB line ends. No further ORB work in this project.
+If Q2 passes: proceed to Q1 as the real OOS.
