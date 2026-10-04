@@ -1,16 +1,15 @@
 # NEXT STEP
 
-Stage F, Step 5 - Multi-month / multi-year.
+Stage F, Step 6 - Cost stress and dispersion analysis.
 
-Goal: extend the F4 approach to a longer window. Options:
-A. Three months (2026-07-01 to 2026-09-30). ~65 sessions.
-B. One year (2025-10-01 to 2026-09-30). ~250 sessions.
-C. Two years. Storage-heavy on this laptop.
+Two parts:
 
-Recommendation: three months first. If the pattern holds across
-quarters, extend to a year.
+1. Trade dispersion. Read the 64 Q3 journals and analyze the
+   distribution of individual trade P&L. Are returns concentrated in
+   a few trades or spread across many? Removing the top 3 trades:
+   does the sign flip?
 
-The mechanism is identical to F4: download range, split, replay per
-day, compare journals. No code changes needed.
+2. Cost stress. Re-run Q3 under four friction models (normal,
+   moderate, high, extreme) and compare P&L at each level.
 
 Awaiting: instructor to issue the step contract.

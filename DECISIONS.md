@@ -1355,3 +1355,37 @@ will explore parameter sensitivity. F8 will test out-of-sample.
 
 Do not tune. Do not draw conclusions yet. F4 is a data point, not a
 verdict.
+
+## 2026-10-04 - F5 findings: Q3 2026 multi-month replay
+64 sessions, 23 trades, zero friction.
+
+Finding 13 - Return concentration
+Three trades account for +362.95 of +390.65 total:
+  2026-07-17  +101.08
+  2026-09-09  +163.44
+  2026-09-14   +98.43
+Removing those three collapses Q3 to roughly +28. The positive
+result is not broad-based. It depends on a small number of winning
+days.
+
+Finding 14 - Determinism verified over three months
+The 21 September days reproduce F4 exactly. Same trades, same P&L,
+same day-by-day shape. The replay system is deterministic across
+independent runs on the same data over a longer window.
+
+Finding 15 - Monthly variance
+July: +148.30 (7 trades)
+August: +28.87 (4 trades)
+September: +213.48 (12 trades)
+August is nearly flat. The strategy is not stable month to month.
+
+Finding 16 - Win rate is a coin flip
+12W / 11L across Q3. The positive P&L comes from the 2:1 reward-to-
+risk ratio, not from predictive direction. This makes the strategy
+sensitive to reward-to-risk changes (stop/target multiples) and to
+slippage on exits.
+
+## 2026-10-04 - What F5 does not tell us
+Still zero friction. Still one symbol. Still no out-of-sample test.
+The +390.65 is an upper bound. F6 will stress it. F7 will check
+parameter sensitivity. F8 will check unseen data.
